@@ -17,7 +17,7 @@ In this demonstration, you will cover the following topics:
 - [*Create the control plane*](create-cp.md)
 - [*Access the data plane*](access.md)
 - [*Create an OpenStack network*](create-network.md)
-- [*Create an OpenStack virtual machine*](create-nv.md)
+- [*Create an OpenStack virtual machine*](create-vm.md)
 
 
 Within the demo environment, you will be able to copy and paste the specified commands into the CLI. For some steps you may also need to edit some of the commands from the 

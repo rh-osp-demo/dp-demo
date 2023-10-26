@@ -1,4 +1,4 @@
-Welcome to the Red Hat OpenStack Services on OpenShift demonstration instructions. These instructions will
+Welcome to the Red Hat OpenStack Services on OpenShift(RHOSO) demonstration instructions. These instructions will
 guide you through the installation of the next generation of Red Hat's OpenStack product onto an existing
 OpenShift Cluster utilizing a bastion host and a single host for the data plane.
 

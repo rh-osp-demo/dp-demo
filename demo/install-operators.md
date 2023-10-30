@@ -280,7 +280,7 @@ oc create secret generic osp-operators-secret \
 9. `./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0 -b 
 "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-ansibleee-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/dataplane-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.0" --mode semver`.
 
-`podman push <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0`
+`podman push <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:latest`
 
 #### Configure the **Catalog Source, OperatorGroup and Subscription** for the **OpenStack Operator**
 using your registry:
@@ -297,7 +297,7 @@ spec:
   sourceType: grpc
   secrets:
     - osp-operators-secret
-  image: <your_registry>/<account>/rhosp-dev-preview/openstack-operator-index:0.1.0
+  image: <your_registry>/<account>/rhosp-dev-preview/openstack-operator-index:latest
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup

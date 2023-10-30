@@ -209,13 +209,9 @@ the **oc* command and *admin* user utilizing the provided password for your demo
 
 `sudo podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview`
 
-<<<<<<< HEAD
-`cat /etc/containers/policy.json`
-=======
 `sudo cat /etc/containers/policy.json`
->>>>>>> 5d5985b (install updates)
 
-   The policy.json file should look like:
+The policy.json file should look like:
    
 `{
     "default": [
@@ -272,27 +268,26 @@ registry or the Red Hat Quay instance in your environment.
 `podman login registry.redhat.io`
 
 7. Login with quayadmin to the environment's Quay or login to your own registry:
-`podman login <your_registry>`
+`podman login <your_registry> --authfile auth.json`
 
-8. `./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0 -b "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-ansibleee-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/dataplane-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.0" --mode semver`.
+8. Create secret for the registry:
+`podman login --username "quayadmin" --password <password> <your_registry> --authfile auth.json
+oc create secret generic osp-operators-secret \
+    -n openstack-operators \
+    --from-file=.dockerconfigjson=auth.json \
+    --type=kubernetes.io/dockerconfigjson`
+
+9. `./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0 -b 
+"registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-ansibleee-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/dataplane-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.0" --mode semver`.
 
 `podman push <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0`
 
-#### Configure the **Catalog Source, OperatorGroup and Subscription**
-<<<<<<< HEAD
-for the **OpenStack Operator**
-
-1. Create the **openstack-operator.yaml** with the following content:
-
-```
-=======
-for the **OpenStack Operator** using your registry:
+#### Configure the **Catalog Source, OperatorGroup and Subscription** for the **OpenStack Operator**
+using your registry:
 
 1. Create the new **CatalogSource, OperatorGroup, and Subscription** CRs
-in the **openstack** namespace:
+in the **openstack** namespace in **openstack-operators.yaml**:
 
-`cat << EOF | oc apply -f -
->>>>>>> 5d5985b (install updates)
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -300,14 +295,16 @@ metadata:
   namespace: openstack-operators
 spec:
   sourceType: grpc
-  image: <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:latest
-
+  secrets:
+    - osp-operators-secret
+  image: <your_registry>/<account>/rhosp-dev-preview/openstack-operator-index:0.1.0
+---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
   name: openstack
   namespace: openstack-operators
-
+---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
@@ -318,11 +315,6 @@ spec:
   channel: alpha
   source: openstack-operator-index
   sourceNamespace: openstack-operators
-<<<<<<< HEAD
-```
-=======
- EOF`
->>>>>>> 5d5985b (install updates)
 
 2. Confirm that you have installed the Openstack Operator, **openstack-operator.openstack-operators**: 
 
@@ -330,6 +322,6 @@ spec:
 
 3. Review the pods in the **openstack-operators** namespace:
 
-`oc get pods -n openstack-operator`
+`oc get pods -n openstack-operators`
 
 [back](prereqs.md) [next](secure.md)

@@ -202,9 +202,10 @@ the **oc* command and *admin* user utilizing the provided password for your demo
 
 `podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview`
 
-`cat /etc/containers/policy.json 
+`cat /etc/containers/policy.json`
 
    The policy.json file should look like:
+   
 `{
     "default": [
         {
@@ -243,7 +244,7 @@ the **oc* command and *admin* user utilizing the provided password for your demo
             ]
         }
     }
-}'
+}`
 
 4. Download and expand the Operator Package Manager (**opm**)
 
@@ -265,11 +266,12 @@ quay instance
 
 `podman push --tls-verify=false <your_registry>/quayadmin/openstack/rhosp-dev-preview/openstack-operator-index:0.1.0`
 
-#### Configure the **Catalog Source, OPeratorGroup and Subscription**
+#### Configure the **Catalog Source, OperatorGroup and Subscription**
 for the **OpenStack Operator**
 
-1. Create the **openstack-operator.yaml** wit the following content:
+1. Create the **openstack-operator.yaml** with the following content:
 
+```
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -295,6 +297,7 @@ spec:
   channel: alpha
   source: openstack-operator-index
   sourceNamespace: openstack-operators
+```
 
 2. Create the new **CatalogSource, OperatorGroup, and Subscription** CRs
 in the **openstack** namespace:

@@ -18,7 +18,7 @@ demo console.
 ##### NMState Operator
 
 1. Click on **Operators** to expand the section and then select "OperatorsHub".
-2. Search for **NMState** and select **Kubernetes NMState OPerator** and click **Install**
+2. Search for **NMState** and select **Kubernetes NMState Operator** and click **Install**
 3. Use defaults and click **Install**
 
 #### MetalLB Operator
@@ -176,6 +176,13 @@ EOF`
 
 ## Install the OpenStack Operator
 
+### Create a **QuayRegistry** in your Demo environment if needed
+
+1. Using the **Red Hat Quay** URL for your environment log in as
+**quayadmin** using the provided password
+2. Click on **Create New Repository** and name it **rhosp-dev-preview**
+3. Leave as Private and click **Create Private Repository**
+
 ### Login to the Bastion and cluster if needed
 
 Log into the **Bastion server** using the **ssh command** provided in the demo console
@@ -196,13 +203,17 @@ the **oc* command and *admin* user utilizing the provided password for your demo
 
 `oc new-project openstack`
 
-3. To prevent issues with image signing, enter the following commands:
+3. To prevent issues with image signing, enter the following commands and then verify:
 
-`curl https://www.redhat.com/security/data/f21541eb.txt -o /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta`
+`sudo curl https://www.redhat.com/security/data/f21541eb.txt -o /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta`
 
-`podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview`
+`sudo podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview`
 
+<<<<<<< HEAD
 `cat /etc/containers/policy.json`
+=======
+`sudo cat /etc/containers/policy.json`
+>>>>>>> 5d5985b (install updates)
 
    The policy.json file should look like:
    
@@ -254,24 +265,34 @@ the **oc* command and *admin* user utilizing the provided password for your demo
 
 5. Use the **opm** tool to create an index image:
 
-Note: You will need to replace **<your_registry>** with the **existing route** of your
-quay instance
+Note: You will need to replace **<your_registry>** with the **existing route** of your local
+registry or the Red Hat Quay instance in your environment.
 
+6. Login with your RedHat account:
 `podman login registry.redhat.io`
-`podman login --tls-verify=false <your_registry>`
 
+7. Login with quayadmin to the environment's Quay or login to your own registry:
+`podman login <your_registry>`
 
-`./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/quayadmin/openstack/rhosp-dev-preview/openstack-operator-index:0.1.0 -b 
-"registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-ansibleee-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/dataplane-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.0" --mode semver`.
+8. `./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0 -b "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-ansibleee-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/dataplane-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.0" --mode semver`.
 
-`podman push --tls-verify=false <your_registry>/quayadmin/openstack/rhosp-dev-preview/openstack-operator-index:0.1.0`
+`podman push <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0`
 
 #### Configure the **Catalog Source, OperatorGroup and Subscription**
+<<<<<<< HEAD
 for the **OpenStack Operator**
 
 1. Create the **openstack-operator.yaml** with the following content:
 
 ```
+=======
+for the **OpenStack Operator** using your registry:
+
+1. Create the new **CatalogSource, OperatorGroup, and Subscription** CRs
+in the **openstack** namespace:
+
+`cat << EOF | oc apply -f -
+>>>>>>> 5d5985b (install updates)
 apiVersion: operators.coreos.com/v1alpha1
 kind: CatalogSource
 metadata:
@@ -279,7 +300,7 @@ metadata:
   namespace: openstack-operators
 spec:
   sourceType: grpc
-  image: <your_registry>/quayadmin/openstack/rhosp-dev-preview/openstack-operator-index:latest
+  image: <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:latest
 
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
@@ -297,18 +318,17 @@ spec:
   channel: alpha
   source: openstack-operator-index
   sourceNamespace: openstack-operators
+<<<<<<< HEAD
 ```
+=======
+ EOF`
+>>>>>>> 5d5985b (install updates)
 
-2. Create the new **CatalogSource, OperatorGroup, and Subscription** CRs
-in the **openstack** namespace:
-
-`oc apply -f openstack-operator.yaml`
-
-3. Confirm that you have installed the Openstack Operator, **openstack-operator.openstack-operators**: 
+2. Confirm that you have installed the Openstack Operator, **openstack-operator.openstack-operators**: 
 
 `oc get operators openstack-operator.openstack-operators`
 
-4. Review the pods in the **openstack-operators** namespace:
+3. Review the pods in the **openstack-operators** namespace:
 
 `oc get pods -n openstack-operator`
 

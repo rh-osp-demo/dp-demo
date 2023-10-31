@@ -21,11 +21,21 @@ demo console.
 2. Search for **NMState** and select **Kubernetes NMState Operator** and click **Install**
 3. Use defaults and click **Install**
 
-#### MetalLB Operator
+###### Create a **NMState Instance**
+
+1. In **Details** Click on **Create Instance** under the **NMState API**
+2. Use defaults and click **Create**
+
+##### MetalLB Operator
 
 1. Click on **Operators** to expand the section and then select "OperatorsHub".
 2. Search for **MetalLB** and select **MetalLB Operator** and click **Install**
 3. Use defaults and click **Install**
+
+###### Create a **MetalLB Instance**
+
+1. In **Details** Click on **Create Instance** under the **MetalLB API**
+2. Use defaults and click **Create**
 
 ### Installating the Prerequisite Operators using the CLI
 

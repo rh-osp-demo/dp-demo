@@ -11,4 +11,13 @@ already included in the demonstration environment such as:
 - Access to repositories which contain the Dev Preview code
 - Access to an existing registry(local or in your environment)
 
+## Create a **QuayRegistry** in your provided Red Hat Quay
+
+1. Navigate to your **Red Hat Quay** in **Installed Operators** and in
+the **openshift-operators** Namespace
+2. Click on **Create instance** and then change the name to **openstack**
+3. Select **default-token** as the Config Bundle Secret
+4, Click **Create**
+Note: You will need an Red Hat account.
+
 [back](index.md) [next](install-operators.md)

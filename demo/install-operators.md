@@ -186,13 +186,6 @@ EOF`
 
 ## Install the OpenStack Operator
 
-### Create a **QuayRegistry** in your Demo environment if needed
-
-1. Using the **Red Hat Quay** URL for your environment log in as
-**quayadmin** using the provided password
-2. Click on **Create New Repository** and name it **rhosp-dev-preview**
-3. Leave as Private and click **Create Private Repository**
-
 ### Login to the Bastion and cluster if needed
 
 Log into the **Bastion server** using the **ssh command** provided in the demo console
@@ -269,28 +262,47 @@ The policy.json file should look like:
 
 `tar -xvf opm-linux.tar.gz`
 
+5. If using your own registry skip to **6**, If using the **local registry** you will need to open access:
+
+`oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge`
+
+`HOST=$(oc get route default-route -n openshift-image-registry --template='{{ .spec.host }}')`
+
+`podman login -u admin -p $(oc whoami -t) --tls-verify=false $HOST`
+
+`echo $HOST`
+
+
 5. Use the **opm** tool to create an index image:
 
 Note: You will need to replace **<your_registry>** with the **existing route** of your local
-registry or the Red Hat Quay instance in your environment.
+registry or the following information for the registry in your environment.
+<your_registry> - <echo $HOST>
+<port> - 5000
+<project> - openstack
 
-6. Login with your RedHat account:
-`podman login registry.redhat.io`
 
-7. Login with quayadmin to the environment's Quay or login to your own registry:
+6. Login with your RedHat account and create a secret:
+`podman login registry.redhat.io --authfile auth.json`
+
+7. Login with admin to the environment's registry or login to your own registry and create a secret:
+`podman login <your_registry> -u admin -p $(oc whoami -t) --authfile auth.json`
+or
 `podman login <your_registry> --authfile auth.json`
 
 8. Create secret for the registry:
-`podman login --username "quayadmin" --password <password> <your_registry> --authfile auth.json
-oc create secret generic osp-operators-secret \
+
+`oc create secret generic osp-operators-secret \
     -n openstack-operators \
     --from-file=.dockerconfigjson=auth.json \
     --type=kubernetes.io/dockerconfigjson`
 
-9. `./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/quayadmin/rhosp-dev-preview/openstack-operator-index:0.1.0 -b 
+9. Create the **image index** and push to the registry:
+
+`./opm index add -u podman --pull-tool podman --tag <your_registry>:<port>/openstack/rhosp-dev-preview/openstack-operator-index:0.1.0 -b 
 "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-ansibleee-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/dataplane-operator-bundle:0.1.0,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.0" --mode semver`.
 
-`podman push <your_registry>/quayadmin/rhosp-dev-preview/openstack-operator-index:latest`
+`podman push <your_registry>/openstack/rhosp-dev-preview/openstack-operator-index:latest`
 
 #### Configure the **Catalog Source, OperatorGroup and Subscription** for the **OpenStack Operator**
 using your registry:

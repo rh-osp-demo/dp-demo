@@ -1,0 +1,63 @@
+apiVersion: network.openstack.org/v1beta1
+kind: NetConfig
+metadata:
+  name: openstacknetconfig
+  namespace: openstack
+spec:
+  networks:
+  - name: CtlPlane
+    dnsDomain: ctlplane.aio.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 172.22.0.120
+        start: 172.22.0.100
+      - end: 172.22.0.200
+        start: 172.22.0.150
+      cidr: 172.22.0.0/24
+      gateway: 172.22.0.1
+  - name: InternalApi 
+    dnsDomain: internalapi.aio.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 172.17.0.250
+        start: 172.17.0.100
+      excludeAddresses:
+      - 172.17.0.10
+      - 172.17.0.12
+      cidr: 172.17.0.0/24
+      vlan: 20
+  - name: Tenant
+    dnsDomain: tenant.aio.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 172.19.0.250
+        start: 172.19.0.100
+      excludeAddresses:
+      - 172.19.0.10
+      - 172.19.0.12
+      cidr: 172.19.0.0/24
+      vlan: 22
+  - name: Storage
+    dnsDomain: storage.aio.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 172.18.0.250
+        start: 172.18.0.100
+      excludeAddresses:
+      - 172.18.0.10
+      - 172.18.0.12
+      cidr: 172.18.0.0/24
+      vlan: 21
+  - name: External
+    dnsDomain: external.aio.example.com
+    subnets:
+    - name: subnet1
+      allocationRanges:
+      - end: 192.168.123.90
+        start: 192.168.123.61
+      cidr: 192.168.123.0/24
+      gateway: 192.168.123.254

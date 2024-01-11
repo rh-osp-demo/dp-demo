@@ -1,112 +1,51 @@
-# Configuration, Installation, and Using Red Hat OpenStack Services on OpenShift(RHOSO)
-
-## Default Red Hat OpenStack Platform networks
-
-The following table details the default networks used in a RHOSP deployment. If required, you can update the networks for your environment.
-
-| **Network name** | **VLAN** | **CIDR**            | **NetConfig allocationRange**     | **MetalLB IPAddressPool range** | **nad ipam range**              | **OCP worker nncp range**       
-|
-|------------------|----------|---------------------|-----------------------------------|---------------------------------|---------------------------------|---------------------------------|
-| ctlplane         | n/a      | 192.168.122.0/24    | 192.168.122.100 - 192.168.122.250 | 192.168.122.80 - 192.168.122.90 | 192.168.122.30 - 192.168.122.70 | 192.168.122.10 - 
-192.168.122.20 |
-| external         | n/a      | 10.0.0.0/24         | 10.0.0.100 - 10.0.0.250           | n/a                             | n/a                             | n/a                             
-|
-| internalapi      | 20 	      | 172.17.0.0/24       | 172.17.0.100 - 172.17.0.250       | 172.17.0.80 - 172.17.0.90       | 172.17.0.30 - 172.17.0.70       | 172.17.0.10 - 
-172.17.0.20       |
-| storage 	         | 21 	      | 172.18.0.0/24 	      | 172.18.0.100 - 172.18.0.250 	      | 172.18.0.80 - 172.18.0.90       | 172.18.0.30 - 172.18.0.70       | 172.18.0.10 
-- 172.18.0.20       |
-| tenant           | 22       | 172.19.0.0/24       | 172.19.0.100 - 172.19.0.250       | 172.19.0.80 - 172.19.0.90       | 172.19.0.30 - 172.19.0.70       | 172.19.0.10 - 172.19.0.20       
-|
-| storageMgmt 	     | 23 		      | 172.20.0.0/24 	      | 172.20.0.100 - 172.20.0.250       | 172.20.0.80 - 172.20.0.90       | 172.20.0.30 - 172.20.0.70       | 
-172.20.0.10 - 172.20.0.20       |
-
 ## Preparing RHOCP for RHOSP network isolation
 
-1. Retrieve the names of the worker nodes in the RHOCP cluster:
-`oc get nodes -l node-role.kubernetes.io/worker -o jsonpath="{.items[*].metadata.name}"`
+We will be using a preconfigured set of yaml files in the **files** directory which
+start with **osp-ng-nncp-**. There are 3 files for each of the master and worker nodes.
 
-2. Discover the network configuration of the OCP nodes using the **worker node names**:
+If not already in the **files directory**:
 
-`oc get nns/<worker_node> -o yaml | more`
+`cp files`
 
-3. Create **openstack-nncp.yaml** to configure a **NodeNetworkConfigurationPolicy (nncp) CR** on your workstation
-using the **ens5 interface** from the previous command.
+1. The preconfigured yamls will be applied indivdually:
 
-apiVersion: nmstate.io/v1
-kind: NodeNetworkConfigurationPolicy
-metadata:
-  name: osp-ens5-<worker_node>
-spec:
-  desiredState:
-    interfaces:
-    - description: internalapi vlan interface
-      ipv4:
-        address:
-        - ip: 172.17.0.10
-          prefix-length: 24 
-        enabled: true
-        dhcp: false
-      ipv6:
-        enabled: false
-      name: ens5.20
-      state: up
-      type: vlan
-      vlan:
-        base-iface: ens5
-        id: 20
-    - description: storage vlan interface
-      ipv4:
-        address:
-        - ip: 172.18.0.10
-          prefix-length: 24 
-        enabled: true
-        dhcp: false
-      ipv6:
-        enabled: false
-      name: ens5.21
-      state: up
-      type: vlan
-      vlan:
-        base-iface: ens5
-        id: 21
-    - description: tenant vlan interface
-      ipv4:
-        address:
-        - ip: 172.19.0.10
-          prefix-length: 24 
-        enabled: true
-        dhcp: false
-      ipv6:
-        enabled: false
-      name: ens5.22
-      state: up
-      type: vlan
-      vlan:
-        base-iface: ens5
-        id: 22
-    - description: control plane interface
-      ipv4:
-        address:
-        - ip: 192.168.122.10
-          prefix-length: 24 
-        enabled: true
-        dhcp: false
-      ipv6:
-        enabled: false
-      mtu: 1500
-      name: ens5
-      state: up
-      type: ethernet
-  nodeSelector:
-    kubernetes.io/hostname: <worker_node>
-    node-role.kubernetes.io/worker: ""
+`oc apply -f osp-ng-nncp-w1.yaml`
+`oc apply -f osp-ng-nncp-w2.yaml`
+`oc apply -f osp-ng-nncp-w3.yaml`
+`oc apply -f osp-ng-nncp-m1.yaml`
+`oc apply -f osp-ng-nncp-m2.yaml`
+`oc apply -f osp-ng-nncp-m3.yaml`
 
-4. Create the **nncp CR** in the cluster:
-
-`oc apply -f openstack-nncp.yaml`
-
-5. Verify that the **nncp CR** is created:
+Wait until they are in an available state before proceeding:
 
 `oc get nncp -w`
 
-[back](secure.md) [next](configure-cp.md)
+`NAME                              STATUS      REASON
+osp-enp1s0-master1-ocp4-master1   Available   SuccessfullyConfigured
+osp-enp1s0-master2-ocp4-master2   Available   SuccessfullyConfigured
+osp-enp1s0-master3-ocp4-master3   Available   SuccessfullyConfigured
+osp-enp1s0-worker-ocp4-worker1    Available   SuccessfullyConfigured
+osp-enp1s0-worker-ocp4-worker2    Available   SuccessfullyConfigured
+osp-enp1s0-worker-ocp4-worker3    Available   SuccessfullyConfigured`
+
+2.Before proceeding we will configure  a **nad** resource for each isolated network to
+attach a service pod to the network:
+
+`oc apply -f osp-ng-netattach.yaml`
+
+3. Once the nodes are available and attached we will configure the **MetalLB IP address range** using
+a preconfigured yaml file:
+
+`oc apply -f osp-ng-metal-lb-ip-address-pools.yaml`
+
+4. Lastly, we will configure a **L2Advertisement** resource which will define which node advertises a
+service to the local network which has been preconfigured for your demo environment:
+
+`oc apply -f osp-ng-metal-lb-l2-advertisements.yaml`
+
+5. Configure the Dataplane Network using a preconfigured yaml file(**files/osp-ng-dataplane-netconfig.yaml**)
+which will configure the topology for each data plane network.
+
+`oc apply -f osp-ng-dataplane-netconfig.yaml`
+
+[back](secure.md) [next](create-cp.md)

@@ -1,0 +1,68 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: osp-enp1s0-worker-ocp4-worker3
+spec:
+  desiredState:
+    interfaces:
+    - description: internalapi vlan interface
+      ipv4:
+        address:
+        - ip: 172.17.0.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      name: enp1s0.20
+      state: up
+      type: vlan
+      vlan:
+        base-iface: enp1s0
+        id: 20
+    - description: storage vlan interface
+      ipv4:
+        address:
+        - ip: 172.18.0.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      name: enp1s0.21
+      state: up
+      type: vlan
+      vlan:
+        base-iface: enp1s0
+        id: 21
+    - description: tenant vlan interface
+      ipv4:
+        address:
+        - ip: 172.19.0.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      name: enp1s0.22
+      state: up
+      type: vlan
+      vlan:
+        base-iface: enp1s0
+        id: 22
+    - description: Configuring enp1s0
+      ipv4:
+        address:
+        - ip: 172.22.0.12
+          prefix-length: 24 
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: false
+      mtu: 1500
+      name: enp1s0
+      state: up
+      type: ethernet
+  nodeSelector:
+    kubernetes.io/hostname: ocp4-worker3.aio.example.com 
+    node-role.kubernetes.io/worker: ""

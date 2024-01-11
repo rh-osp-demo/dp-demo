@@ -1,0 +1,31 @@
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: openstack-operator-index
+  namespace: openstack-operators
+spec:
+  sourceType: grpc
+  secrets:
+    - "osp-operators-secret"
+  gprcPodConfig:
+    securityContextConfig: legacy
+  # adjust the repolink below to match your environment:
+  image: quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: openstack
+  namespace: openstack-operators
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: openstack-operator
+  namespace: openstack-operators
+spec:
+  name: openstack-operator
+  channel: alpha
+  source: openstack-operator-index
+  sourceNamespace: openstack-operators

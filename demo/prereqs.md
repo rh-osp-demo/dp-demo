@@ -247,13 +247,13 @@ and provided password. Accept any SSL Certificate warnings.
 oc new-project quay-enterprise
 ```
 
-##### Create **Quay YAML and Secret**. Remember you will need to change <uuid> for the uuid of
+##### Create **Quay YAML and Secret**. Remember you will need to change uuid for the uuid of
 your demo instance which is the variable between hypervisor and dynamic.opentlc.com in the
 bastion_public_hostname.
 
 ```
 cat << EOF >> config.yaml 
-SERVER_HOSTNAME: quay.apps.<uuid>.dynamic.redhatworkshops.io
+SERVER_HOSTNAME: quay.apps.uuid.dynamic.redhatworkshops.io
 EOF
 ```
 
@@ -307,20 +307,20 @@ openstack-internal-registry-quay-redis-c8d944c9d-ng2xp        1/1     Running   
 
 ##### Create the quay_user and private registry
 
-Navigate to quay.apps.<uuid>.dynamic.redhatworkshops.io and create the **quay_user** user
+Navigate to quay.apps.uuid.dynamic.redhatworkshops.io and create the **quay_user** user
 account with the password **openstack** and create a private repository called
 **dp2-openstack-operator-index**.
 
 ##### Obtain the **self-signed certificate** for the **Quay Registry** and patch the cluster
 
 ```
-ex +'/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -connect quay.apps.<uuid>.dynamic.redhatworkshops.io:443) -scq > server.pem
+ex +'/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -connect quay.apps.uuid.dynamic.redhatworkshops.io:443) -scq > server.pem
 oc create configmap registry-config \
- --from-file=quay.apps.<uuid>.dynamic.redhatworkshops.io=server.pem -n openshift-config \
+ --from-file=quay.apps.uuid.dynamic.redhatworkshops.io=server.pem -n openshift-config \
 oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-config"}}}' --type=merge \
 oc patch image.config.openshift.io/cluster --type merge --patch \
 '{"spec":{"registrySources":{"allowedRegistries":["docker-registry.upshift.redhat.com","registry.redhat.io","quay.io","registry-proxy.engineering.redhat.com","gcr.io","image-registry.openshift-image-registry.svc:5000",\
-"quay.apps.<uuid>.dynamic.redhatworkshops.io"],"insecureRegistries":["docker-registry.upshift.redhat.com","quay.apps.<uuid>.dynamic.redhatworkshops.io"]}}}'
+"quay.apps.uuid.dynamic.redhatworkshops.io"],"insecureRegistries":["docker-registry.upshift.redhat.com","quay.apps.uuid.dynamic.redhatworkshops.io"]}}}'
 ```
 
 Move the **certificates** to the correct location and update:

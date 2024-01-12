@@ -88,7 +88,7 @@ tar -xvf opm-linux.tar.gz
 
 Note: You will need to replace **<your_registry>** with the **existing route** of your local
 registry or the following information for the registry in your environment.
-<your_registry> - quay.apps.<uuid>.dynamic.redhatworkshops.io
+<your_registry> - quay.apps.uuid.dynamic.redhatworkshops.io
 
 1. Login with your RedHat account and create a secret:
 ```
@@ -98,8 +98,8 @@ podman login registry.redhat.io --authfile auth.json
 
 2. Login with quay_user to the environment's registry or login to your own registry and create a secret:
 ```
-podman login --username "quay_user" --password "openstack" quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index
-podman login --username "quay_user" --password "openstack" quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index --authfile auth.json
+podman login --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index
+podman login --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index --authfile auth.json
 ```
 
 or
@@ -111,11 +111,11 @@ podman login <your_registry> -u <user> -p <password> --authfile auth.json
 3. Create the **image index** and push to the registry:
 
 ```
-./opm index add -u podman --pull-tool podman --tag quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest -b "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ansibleee-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/octavia-operator-bundle:0.1.2" --mode semver
+./opm index add -u podman --pull-tool podman --tag quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest -b "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ansibleee-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/octavia-operator-bundle:0.1.2" --mode semver
 ```
 
 ```
-podman push quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest
+podman push quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest
 ```
 
 ### Configure the **Catalog Source, OperatorGroup and Subscription** for the **OpenStack Operator**
@@ -133,11 +133,18 @@ oc create secret generic osp-operators-secret \
 2. Create the new **CatalogSource, OperatorGroup, and Subscription** CRs
 in the **openstack** namespace from **files/openstack-operators.yaml**:
 
-```
-cd files
-``'
+You can cut and paste the referenced yamlfiles from the repo or you may wish to
+clone the repository onto the bastion which this guide will assume:
 
-Update <uuid> in **osp-ng-openstack-operator.yaml**
+```
+git clone https://github.com/rh-osp-demo/dp-demo.git
+```
+
+```
+cd dp-demo/demo/files
+```
+
+Update uuid in **osp-ng-openstack-operator.yaml**
 
 ```
 oc apply -f osp-ng-openstack-operator.yaml

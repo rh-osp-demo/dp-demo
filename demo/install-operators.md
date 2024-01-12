@@ -9,27 +9,34 @@ provided **ssh command** and provided **password**.
 The next step in installing the **OpenStack Operators** will be to login to the cluster using
 the **oc* command and *admin* user utilizing the provided password for your demo.
 
-`oc login -u admin -p <password>`
+```
+oc login -u admin -p <password>
+```
 
 1. Create the **openstack-operators** project for the RHOSO operators:
 
-`oc new-project openstack-operators`
+```
+oc new-project openstack-operators
+```
 
 2. Create the `openstack` project for the deployed RHOSO environment:			
 
-`oc new-project openstack`
+```
+oc new-project openstack
+```
 
 3. To prevent issues with image signing, enter the following commands and then verify:
 
-`sudo curl https://www.redhat.com/security/data/f21541eb.txt -o /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta`
-
-`sudo podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview`
-
-`sudo cat /etc/containers/policy.json`
+```
+sudo curl https://www.redhat.com/security/data/f21541eb.txt -o /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta
+sudo podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview
+sudo cat /etc/containers/policy.json
+```
 
 The policy.json file should look like:
    
-`{
+```
+{
     "default": [
         {
             "type": "insecureAcceptAnything"
@@ -67,13 +74,15 @@ The policy.json file should look like:
             ]
         }
     }
-}`
+}
+```
 
 ### Download and expand the Operator Package Manager (**opm**)
 
-`wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/opm-linux.tar.gz`
-
-`tar -xvf opm-linux.tar.gz`
+```
+wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/opm-linux.tar.gz
+tar -xvf opm-linux.tar.gz
+```
 
 ### Use the **opm** tool to create an index image:
 
@@ -82,48 +91,68 @@ registry or the following information for the registry in your environment.
 <your_registry> - quay.apps.<uuid>.dynamic.redhatworkshops.io
 
 1. Login with your RedHat account and create a secret:
-`podman login registry.redhat.io`
-`podman login registry.redhat.io --authfile auth.json`
+```
+podman login registry.redhat.io
+podman login registry.redhat.io --authfile auth.json
+```
 
 2. Login with quay_user to the environment's registry or login to your own registry and create a secret:
-`podman login --username "quay_user" --password "openstack" quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index`
-`podman login --username "quay_user" --password "openstack" quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index --authfile auth.json`
+```
+podman login --username "quay_user" --password "openstack" quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index
+podman login --username "quay_user" --password "openstack" quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index --authfile auth.json
+```
+
 or
-`podman login <your_registry> -u <user> -p <password>`
-`podman login <your_registry> -u <user> -p <password> --authfile auth.json`
+```
+podman login <your_registry> -u <user> -p <password>
+podman login <your_registry> -u <user> -p <password> --authfile auth.json
+```
 
 3. Create the **image index** and push to the registry:
 
-`./opm index add -u podman --pull-tool podman --tag quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest -b "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ansibleee-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/octavia-operator-bundle:0.1.2" --mode semver`
+```
+./opm index add -u podman --pull-tool podman --tag quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest -b "registry.redhat.io/rhosp-dev-preview/openstack-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/swift-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/glance-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/infra-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ironic-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/keystone-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ovn-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/placement-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/telemetry-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/heat-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/cinder-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/manila-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/neutron-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/nova-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/ansibleee-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/mariadb-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/openstack-baremetal-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/rabbitmq-cluster-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/horizon-operator-bundle:0.1.2,registry.redhat.io/rhosp-dev-preview/octavia-operator-bundle:0.1.2" --mode semver
+```
 
-`podman push quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest`
+```
+podman push quay.apps.<uuid>.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index:latest
+```
 
 ### Configure the **Catalog Source, OperatorGroup and Subscription** for the **OpenStack Operator**
 using your registry:
 
 1. Create secret for the registry:
 
-`oc create secret generic osp-operators-secret \
+```
+oc create secret generic osp-operators-secret \
     -n openstack-operators \
     --from-file=.dockerconfigjson=auth.json \
-    --type=kubernetes.io/dockerconfigjson`
-
+    --type=kubernetes.io/dockerconfigjson
+```
 
 2. Create the new **CatalogSource, OperatorGroup, and Subscription** CRs
 in the **openstack** namespace from **files/openstack-operators.yaml**:
 
-`cd files'
+```
+cd files
+``'
 
 Update <uuid> in **osp-ng-openstack-operator.yaml**
 
-`oc apply -f osp-ng-openstack-operator.yaml`
+```
+oc apply -f osp-ng-openstack-operator.yaml
+```
 
 3. Confirm that you have installed the Openstack Operator, **openstack-operator.openstack-operators**: 
 
-`oc get operators openstack-operator.openstack-operators`
+```
+oc get operators openstack-operator.openstack-operators
+```
 
 3. Review the pods in the **openstack-operators** namespace:
 
-`oc get pods -n openstack-operators`
+```
+oc get pods -n openstack-operators
+```
 
 [back](prereqs.md) [next](secure.md)

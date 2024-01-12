@@ -14,7 +14,7 @@ already included in the demonstration environment such as:
 copy and pasted for use. For ease of instructions it will be assumed the repo
 has been cloned
 
-###Install the Prerequisite Operators
+### Install the Prerequisite Operators
 
 There are two operators that are required to be installed before you can install
 the OpenStack Operator, the [NMState 

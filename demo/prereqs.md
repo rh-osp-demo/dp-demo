@@ -14,9 +14,7 @@ already included in the demonstration environment such as:
 copy and pasted for use. For ease of instructions it will be assumed the repo
 has been cloned
 
-# Configuration, Installation, and Using Red Hat OpenStack Services on OpenShift(RHOSO)
-
-##Install the Prerequisite Operators
+###Install the Prerequisite Operators
 
 There are two operators that are required to be installed before you can install
 the OpenStack Operator, the [NMState 
@@ -24,9 +22,9 @@ Operator](https://access.redhat.com/documentation/en-us/openshift_container_plat
 and the [MetalLB 
 Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install) 
 
-### Installing the Operators from the Operator Hub
+#### Installing the Operators from the Operator Hub
 
-#### Logging in to the Cluster
+##### Logging in to the Cluster
 
 Use the URL for the console and the password for the admin user provided in the
 demo console.
@@ -53,9 +51,9 @@ demo console.
 1. In **Details** Click on **Create Instance** under the **MetalLB API**
 2. Use defaults and click **Create**
 
-### Installating the Prerequisite Operators using the CLI
+#### Installating the Prerequisite Operators using the CLI
 
-#### Logging in to the Cluster
+##### Logging in to the Cluster
 
 Log into the **Bastion server** using the **ssh command** provided in the demo console
 and the **lab-user password**.
@@ -221,15 +219,17 @@ and provided password. Accept any SSL Certificate warnings.
 your demo instance which is the variable between hypervisor and dynamic.opentlc.com in the
 bastion_public_hostname.
 
-`cat << EOF >> config.yaml
+```cat << EOF >> config.yaml 
 SERVER_HOSTNAME: quay.apps.<uuid>.dynamic.redhatworkshops.io
-EOF`
+EOF
+```
 
 `oc create secret generic --from-file config.yaml=./config.yaml config-bundle-secret`
 
 ##### Create the **QuayRegistry YAML, apply and wait for it to be ready**
 
-`cat << EOF >> quayregistry.yaml
+```
+cat << EOF >> quayregistry.yaml
 apiVersion: quay.redhat.com/v1
 kind: QuayRegistry
 metadata:
@@ -246,7 +246,8 @@ spec:
       managed: false
     - kind: monitoring
       managed: false
-EOF`
+EOF
+```
 
 `oc create -n quay-enterprise -f quayregistry.yaml`
 
@@ -256,16 +257,20 @@ Wait until all pods are in running and ready state:
 
 Which should look similar to below when ready:
 
-`NAME                                                          READY   STATUS      RESTARTS   AGE
+```
+NAME                                                          READY   STATUS      RESTARTS   AGE
 openstack-internal-registry-clair-postgres-84b7b8d94d-klpl5   1/1     Running     0          3m35s
 openstack-internal-registry-quay-app-76f7784b4c-9ffzb         1/1     Running     0          3m5s
 openstack-internal-registry-quay-app-76f7784b4c-xrl2l         1/1     Running     0          3m5s
 openstack-internal-registry-quay-database-9654cf65d-mblkm     1/1     Running     0          3m35s
-openstack-internal-registry-quay-redis-c8d944c9d-ng2xp        1/1     Running     0          3m36s`
+openstack-internal-registry-quay-redis-c8d944c9d-ng2xp        1/1     Running     0          3m36s
+```
 
-##### Navigate to quay.apps.<uuid>.dynamic.redhatworkshops.io and create the quay_user user
-account with the password openstack and create a private repository called
-dp2-openstack-operator-index.
+##### Create the quay_user and private registry
+
+Navigate to quay.apps.<uuid>.dynamic.redhatworkshops.io and create the **quay_user** user
+account with the password **openstack** and create a private repository called
+**dp2-openstack-operator-index**.
 
 ##### Obtain the **self-signed certificate** for the **Quay Registry** and patch the cluster
 
@@ -279,8 +284,10 @@ oc patch image.config.openshift.io/cluster --type merge --patch \
 
 Move the **certificates** to the correct location and update:
 
-`sudo cp server.pem /etc/pki/ca-trust/source/anchors/`
-`sudo cp server.pem /etc/pki/tls/certs/`
-`sudo update-ca-trust`
+```
+sudo cp server.pem /etc/pki/ca-trust/source/anchors/
+sudo cp server.pem /etc/pki/tls/certs/
+sudo update-ca-trust
+```
 
 [back](index.md) [next](install-operators.md)

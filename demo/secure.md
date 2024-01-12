@@ -4,10 +4,14 @@
 to create a seperate base64 password for heat and one for the remaining
 services.
 
-`oc create -f osp-ng-ctlplane-secret.yaml`
+```
+oc create -f osp-ng-ctlplane-secret.yaml
+```
 
 2. Verify the **Secret** was created:
 
-`oc describe secret osp-secret -n openstack`
+```
+oc describe secret osp-secret -n openstack
+```
 
 [back](install-operators.md) [next](network-isolation.md)

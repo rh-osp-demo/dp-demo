@@ -73,6 +73,7 @@ spec:
       customServiceConfigSecrets:
       - glance-cinder-config
       databaseInstance: openstack
+      storageClass: "nfs"
       storageRequest: 10G
       glanceAPIInternal:
         override:

@@ -1,0 +1,3 @@
+[nfs]
+nas_host=192.168.123.100
+nas_share_path=/nfs/cinder

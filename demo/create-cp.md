@@ -12,6 +12,21 @@ mkdir /nfs/cinder
 chmod 777 /nfs/cinder
 ```
 
+# Configure nfs storage class
+
+```
+mkdir /nfs/pv6
+mkdir /nfs/pv7
+mkdir /nfs/pv8
+mkdir /nfs/pv9
+mkdir /nfs/pv10
+mkdir /nfs/pv11
+chmod 777 /nfs/pv*
+```
+```
+oc create -f nfs-storage.yaml
+```
+
 # Prepare the secret to place the NFS server connection used by Cinder
 ```
 oc create secret generic cinder-nfs-config --from-file=nfs-cinder-conf

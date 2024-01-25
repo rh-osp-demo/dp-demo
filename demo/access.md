@@ -1,5 +1,6 @@
 # Access the OpenStack
 
+
 1. From the **bastion server** access the Control Plane
 
 ```
@@ -13,8 +14,12 @@ openstack compute service list
 openstack network agent list
 logout
 ```
+2. Map the Compute nodes to the Compute cell that they are connected to:
+```
+oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
+```
 
-2. Create a VM
+3. Create a VM
 
 ```
 oc rsh -n openstack openstackclient
@@ -55,7 +60,7 @@ openstack server create \
 openstack floating ip create public
 openstack server add floating ip test-server <FLOATING_IP>
 ```
-3. From the bastion access to the VM:
+4. From the bastion access to the VM:
 
 ```
 ssh cirros@<FLOATING_IP> (password is gocubsgo)

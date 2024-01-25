@@ -14,21 +14,6 @@ Apply the **network confguration**:
 oc apply -f osp-ng-dataplane-netconfig.yaml
 ```
 
-## Configure Storage for the Dataplane
-
-```
-mkdir /nfs/pv6
-mkdir /nfs/pv7
-mkdir /nfs/pv8
-mkdir /nfs/pv9
-mkdir /nfs/pv10
-mkdir /nfs/pv11
-chmod 777 /nfs/pv*
-```
-```
-oc create -f nfs-storage.yaml
-```
-
 ## Create VM for Dataplane
 
 Go to https://access.redhat.com/downloads/content/479/ver=/rhel---9/9.2/x86_64/product-software

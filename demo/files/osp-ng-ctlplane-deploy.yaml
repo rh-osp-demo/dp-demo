@@ -45,16 +45,34 @@ spec:
         - storage
         replicas: 0 # backend needs to be configured
       cinderVolumes:
-        volume1:
+        nfs:
           networkAttachments:
           - storage
-          replicas: 0 # backend needs to be configured
+          customServiceConfig: |
+            [nfs]
+            volume_backend_name=nfs
+            volume_driver=cinder.volume.drivers.nfs.NfsDriver
+            nfs_snapshot_support=true
+            nas_secure_file_operations=false
+            nas_secure_file_permissions=false
+          customServiceConfigSecrets:
+          - cinder-nfs-config
   glance:
     apiOverride:
       route: {}
     template:
+      customServiceConfig: |
+            [DEFAULT]
+            enabled_backends = default_backend:cinder
+            [glance_store]
+            default_backend = default_backend
+            [default_backend]
+            rootwrap_config = /etc/glance/rootwrap.conf
+            description = Default cinder backend
+            cinder_catalog_info volumev3::publicURL
+      customServiceConfigSecrets:
+      - glance-cinder-config
       databaseInstance: openstack
-      storageClass: "nfs"
       storageRequest: 10G
       glanceAPIInternal:
         override:

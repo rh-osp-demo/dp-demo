@@ -37,6 +37,8 @@ spec:
           subnetName: subnet1
         - name: Tenant
           subnetName: subnet1
+        - name: External
+          subnetName: subnet1
   networkAttachments:
     - ctlplane
   nodeTemplate:
@@ -74,7 +76,7 @@ spec:
               mtu: {{ min_viable_mtu }}
               # force the MAC address of the bridge to this interface
               primary: true
-          {% for network in role_networks %}
+          {% for network in role_networks if network != 'External' %}
             - type: vlan
               mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
               vlan_id: {{ lookup('vars', networks_lower[network] ~ '_vlan_id') }}
@@ -83,6 +85,25 @@ spec:
                   {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
               routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
           {% endfor %}
+          {% if 'External' in role_networks or 'external_bridge' in role_tags %}
+          - type: ovs_bridge
+            name: br-ex
+            dns_servers: {{ ctlplane_dns_nameservers }}
+            domain: {{ dns_search_domains }}
+            use_dhcp: false
+            members:
+            - type: interface
+              name: nic2
+              mtu: 1500
+              primary: true
+          {% endif %}
+          {% if 'External' in role_networks %}
+            routes:
+            - ip_netmask: 0.0.0.0/0
+              next_hop: {{ external_gateway_ip | default('192.168.123.1') }}
+            addresses:
+            - ip_netmask: {{ external_ip }}/{{ external_cidr }}
+          {% endif %}
          edpm_network_config_hide_sensitive_logs: false
           #
           # These vars are for the network config templates themselves and are
@@ -110,7 +131,7 @@ spec:
          tenant_vlan_id: 22
          tenant_cidr: '24'
          tenant_host_routes: []
-         neutron_physical_bridge_name: br-ex
+         neutron_physical_bridge_name: br-osp
          # name of the first network interface on the compute node:
          neutron_public_interface_name: eth0
          role_networks:

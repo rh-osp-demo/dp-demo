@@ -108,10 +108,7 @@ sudo subscription-manager release --set=9.2
 ```
 sudo dnf install -y podman
 ````
-Replace uuid
-```
-podman login --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp2-openstack-operator-index
-podman login registry.redhat.io
+
 ```
 Log off
 ```

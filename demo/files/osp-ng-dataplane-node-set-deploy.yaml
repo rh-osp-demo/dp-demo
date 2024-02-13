@@ -6,18 +6,18 @@ spec:
   env:
     - name: ANSIBLE_FORCE_COLOR
       value: "True"
-    - name: ANSIBLE_ENABLE_TASK_DEBUGGER
-      value: "True"
     - name: ANSIBLE_VERBOSITY
       value: "2"
   preProvisioned: true
   services:
+    - bootstrap
     - configure-network
     - validate-network
     - install-os
     - configure-os
     - run-os
     - ovn
+    - neutron-metadata
     - libvirt
     - nova
     - telemetry
@@ -26,18 +26,19 @@ spec:
         hostName: edpm-compute-0
         ansible:
           ansibleHost: 172.22.0.100
+          ansibleUser: root
         networks:
-        - name: CtlPlane
+        - name: ctlplane
           subnetName: subnet1
           defaultRoute: false
           fixedIP: 172.22.0.100
-        - name: InternalApi
+        - name: internalapi
           subnetName: subnet1
-        - name: Storage
+        - name: storage
           subnetName: subnet1
-        - name: Tenant
+        - name: tenant
           subnetName: subnet1
-        - name: External
+        - name: external
           subnetName: subnet1
   networkAttachments:
     - ctlplane
@@ -49,10 +50,10 @@ spec:
       ansiblePort: 22
       ansibleVars:
          service_net_map:
-           nova_api_network: internal_api
-           nova_libvirt_network: internal_api
-         edpm_chrony_ntp_servers:
-           - time.google.com
+           nova_api_network: internalapi
+           nova_libvirt_network: internalapi
+         timesync_ntp_servers:
+           - hostname: pool.ntp.org
          edpm_network_config_template: |
           ---
           {% set mtu_list = [ctlplane_mtu] %}
@@ -76,7 +77,7 @@ spec:
               mtu: {{ min_viable_mtu }}
               # force the MAC address of the bridge to this interface
               primary: true
-          {% for network in role_networks if network != 'External' %}
+          {% for network in role_networks if network != 'external' %}
             - type: vlan
               mtu: {{ lookup('vars', networks_lower[network] ~ '_mtu') }}
               vlan_id: {{ lookup('vars', networks_lower[network] ~ '_vlan_id') }}
@@ -85,7 +86,7 @@ spec:
                   {{ lookup('vars', networks_lower[network] ~ '_ip') }}/{{ lookup('vars', networks_lower[network] ~ '_cidr') }}
               routes: {{ lookup('vars', networks_lower[network] ~ '_host_routes') }}
           {% endfor %}
-          {% if 'External' in role_networks or 'external_bridge' in role_tags %}
+          {% if 'external' in role_networks or 'external_bridge' in role_tags %}
           - type: ovs_bridge
             name: br-ex
             dns_servers: {{ ctlplane_dns_nameservers }}
@@ -97,7 +98,7 @@ spec:
               mtu: 1500
               primary: true
           {% endif %}
-          {% if 'External' in role_networks %}
+          {% if 'external' in role_networks %}
             routes:
             - ip_netmask: 0.0.0.0/0
               next_hop: {{ external_gateway_ip | default('192.168.123.1') }}
@@ -114,15 +115,16 @@ spec:
          - 10.11.5.160
          ctlplane_subnet_cidr: 24
          dns_search_domains: aio.example.com
+         ctlplane_vlan_id: 1
          ctlplane_mtu: 1500
          external_mtu: 1500
          external_vlan_id: 44
          external_cidr: '24'
          external_host_routes: []
-         internal_api_mtu: 1500
-         internal_api_vlan_id: 20
-         internal_api_cidr: '24'
-         internal_api_host_routes: []
+         internalapi_mtu: 1500
+         internalapi_vlan_id: 20
+         internalapi_cidr: '24'
+         internalapi_host_routes: []
          storage_mtu: 1500
          storage_vlan_id: 21
          storage_cidr: '24'
@@ -135,20 +137,17 @@ spec:
          # name of the first network interface on the compute node:
          neutron_public_interface_name: eth0
          role_networks:
-         - InternalApi
-         - Storage
-         - Tenant
+         - internalapi
+         - storage
+         - tenant
          networks_lower:
-           External: external
-           InternalApi: internal_api
-           Storage: storage
-           Tenant: tenant
+           external: external
+           internalapi: internalapi
+           storage: storage
+           tenant: tenant
          # edpm_nodes_validation
          edpm_nodes_validation_validate_controllers_icmp: false
          edpm_nodes_validation_validate_gateway_icmp: false
-         registry_url: registry.redhat.io/rhosp-dev-preview
-         edpm_libvirt_image: "{{ registry_url }}/openstack-nova-libvirt-rhel9:18.0"
-         edpm_multipathd_image: "{{ registry_url }}/openstack-multipathd-rhel9:18.0"
          gather_facts: false
          enable_debug: false
          # edpm firewall, change the allowed CIDR if needed

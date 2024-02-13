@@ -5,7 +5,7 @@ metadata:
   namespace: openstack
 spec:
   networks:
-  - name: CtlPlane
+  - name: ctlplane
     dnsDomain: ctlplane.aio.example.com
     subnets:
     - name: subnet1
@@ -16,7 +16,7 @@ spec:
         start: 172.22.0.150
       cidr: 172.22.0.0/24
       gateway: 172.22.0.1
-  - name: InternalApi 
+  - name: internalapi 
     dnsDomain: internalapi.aio.example.com
     subnets:
     - name: subnet1
@@ -28,7 +28,7 @@ spec:
       - 172.17.0.12
       cidr: 172.17.0.0/24
       vlan: 20
-  - name: Tenant
+  - name: tenant
     dnsDomain: tenant.aio.example.com
     subnets:
     - name: subnet1
@@ -40,7 +40,7 @@ spec:
       - 172.19.0.12
       cidr: 172.19.0.0/24
       vlan: 22
-  - name: Storage
+  - name: storage
     dnsDomain: storage.aio.example.com
     subnets:
     - name: subnet1
@@ -52,7 +52,7 @@ spec:
       - 172.18.0.12
       cidr: 172.18.0.0/24
       vlan: 21
-  - name: External
+  - name: external
     dnsDomain: external.aio.example.com
     subnets:
     - name: subnet1

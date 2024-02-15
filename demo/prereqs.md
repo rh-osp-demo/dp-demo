@@ -315,12 +315,15 @@ account with the password **openstack** and create a private repository called
 
 ```
 ex +'/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -connect quay.apps.uuid.dynamic.redhatworkshops.io:443) -scq > server.pem
-oc create configmap registry-config \
- --from-file=quay.apps.uuid.dynamic.redhatworkshops.io=server.pem -n openshift-config \
-oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-config"}}}' --type=merge \
-oc patch image.config.openshift.io/cluster --type merge --patch \
-'{"spec":{"registrySources":{"allowedRegistries":["docker-registry.upshift.redhat.com","registry.redhat.io","quay.io","registry-proxy.engineering.redhat.com","gcr.io","image-registry.openshift-image-registry.svc:5000",\
-"quay.apps.uuid.dynamic.redhatworkshops.io"],"insecureRegistries":["docker-registry.upshift.redhat.com","quay.apps.uuid.dynamic.redhatworkshops.io"]}}}'
+```
+```
+oc create configmap registry-config --from-file=quay.apps.uuid.dynamic.redhatworkshops.io=server.pem -n openshift-config \
+```
+```
+oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-config"}}}' --type=merge
+```
+```
+oc patch image.config.openshift.io/cluster --type merge --patch '{"spec":{"registrySources":{"allowedRegistries":["docker-registry.upshift.redhat.com","registry.redhat.io","quay.io","registry-proxy.engineering.redhat.com","gcr.io","image-registry.openshift-image-registry.svc:5000","quay.apps.uuid.dynamic.redhatworkshops.io"],"insecureRegistries":["docker-registry.upshift.redhat.com","quay.apps.uuid.dynamic.redhatworkshops.io"]}}}'
 ```
 
 Move the **certificates** to the correct location and update:

@@ -317,7 +317,7 @@ account with the password **openstack** and create a private repository called
 ex +'/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <(echo | openssl s_client -showcerts -connect quay.apps.uuid.dynamic.redhatworkshops.io:443) -scq > server.pem
 ```
 ```
-oc create configmap registry-config --from-file=quay.apps.uuid.dynamic.redhatworkshops.io=server.pem -n openshift-config \
+oc create configmap registry-config --from-file=quay.apps.uuid.dynamic.redhatworkshops.io=server.pem -n openshift-config
 ```
 ```
 oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-config"}}}' --type=merge
@@ -330,7 +330,11 @@ Move the **certificates** to the correct location and update:
 
 ```
 sudo cp server.pem /etc/pki/ca-trust/source/anchors/
+```
+```
 sudo cp server.pem /etc/pki/tls/certs/
+```
+```
 sudo update-ca-trust
 ```
 

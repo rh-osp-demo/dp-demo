@@ -114,7 +114,7 @@ podman login registry.redhat.io
 ```
 podman login  --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp3-openstack-operator-index
 ```
-```
+
 Log off
 ```
 logout

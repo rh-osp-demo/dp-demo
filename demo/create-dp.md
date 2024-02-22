@@ -96,11 +96,11 @@ ssh root@172.22.0.100
 sudo hostnamectl set-hostname edpm-compute-0.aio.example.com
 subscription-manager register
 ```
-#### Configure for the RHEL 9.2 Repos
+#### Configure for the RHEL 9.3 Repos
 ```
 sudo subscription-manager repos --disable=*
 subscription-manager repos --enable=rhceph-6-tools-for-rhel-9-x86_64-rpms --enable=rhel-9-for-x86_64-baseos-rpms --enable=rhel-9-for-x86_64-appstream-rpms --enable=rhel-9-for-x86_64-highavailability-rpms --enable=openstack-17.1-for-rhel-9-x86_64-rpms --enable=fast-datapath-for-rhel-9-x86_64-rpms
-sudo subscription-manager release --set=9.2
+sudo subscription-manager release --set=9.3
 ```
 
 #### Install podman on the compute and login to registries

@@ -1,7 +1,12 @@
 # Access the OpenStack
 
+1. From the **hypervisor server** access the compute node and disable selinux. Note that this is a temporary workaround as we are using OSP 17.1 packages. 
+```
+ssh root@172.22.0.100
+setenforce 0
+```
 
-1. From the **bastion server** access the Control Plane
+2. From the **bastion server** access the Control Plane
 
 ```
 oc rsh -n openstack openstackclient
@@ -14,12 +19,12 @@ openstack compute service list
 openstack network agent list
 logout
 ```
-2. Map the Compute nodes to the Compute cell that they are connected to:
+3. Map the Compute nodes to the Compute cell that they are connected to:
 ```
 oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 ```
 
-3. Create a VM
+4. Create a VM
 
 ```
 oc rsh -n openstack openstackclient

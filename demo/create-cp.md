@@ -33,7 +33,7 @@ oc create secret generic cinder-nfs-config --from-file=nfs-cinder-conf
 ```
 # Prepare the secret to place the server connection used by Glance
 ```
-oc create secret generic glance-cinder-conf --from-file=glance-conf
+oc create secret generic glance-cinder-config --from-file=glance-conf
 ```
 
 # Finally create the OpenStack control plane

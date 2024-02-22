@@ -58,8 +58,9 @@ spec:
           customServiceConfigSecrets:
           - cinder-nfs-config
   glance:
-    apiOverride:
-      route: {}
+    apiOverrides:
+      default:
+        route: {}
     template:
       customServiceConfig: |
             [DEFAULT]
@@ -75,21 +76,24 @@ spec:
       databaseInstance: openstack
       storageClass: "nfs"
       storageRequest: 10G
-      glanceAPIInternal:
-        override:
-          service:
-            metadata:
-              annotations:
-                metallb.universe.tf/address-pool: internalapi
-                metallb.universe.tf/allow-shared-ip: internalapi
-                metallb.universe.tf/loadBalancerIPs: 172.17.0.80
-            spec:
-              type: LoadBalancer
-        networkAttachments:
-        - storage
-      glanceAPIExternal:
-        networkAttachments:
-        - storage
+      secret: osp-secret
+      keystoneEndpoint: default
+      glanceAPIs:
+        default:
+          type: single
+          replicas: 1
+          override:
+            service:
+              internal:
+                metadata:
+                  annotations:
+                    metallb.universe.tf/address-pool: internalapi
+                    metallb.universe.tf/allow-shared-ip: internalapi
+                    metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+                spec:
+                  type: LoadBalancer
+          networkAttachments:
+          - storage
   keystone:
     apiOverride:
       route: {}
@@ -305,14 +309,27 @@ spec:
       ironicNeutronAgent:
         replicas: 1
       secret: osp-secret
-  ceilometer:
-    template:
-      passwordSelector:
-        service: CeilometerPassword
-      secret: osp-secret
-      serviceUser: ceilometer
-  swift:
+  telemetry:
     enabled: true
+    template:
+      metricStorage:
+        enabled: false
+        monitoringStack:
+          type: prometheus
+      autoscaling:
+        enabled: false
+        prometheus:
+          deployPrometheus: false
+        aodh:
+          databaseInstance: openstack
+          memcachedInstance: memcached
+          secret: osp-secret
+        heatInstance: heat
+      ceilometer:
+        enabled: true
+        secret: osp-secret
+  swift:
+    enabled: false
     proxyOverride:
       route: {}
     template:

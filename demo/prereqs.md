@@ -16,12 +16,13 @@ has been cloned
 
 ### Install the Prerequisite Operators
 
-There are two operators that are required to be installed before you can install
+There are three operators that are required to be installed before you can install
 the OpenStack Operator, the [NMState 
 Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/kubernetes-nmstate#installing-the-kubernetes-nmstate-operator-cli)
-and the [MetalLB 
+the [MetalLB 
 Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install) 
-
+and the [Cert-Manager  
+Operator](https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html)
 #### Installing the Operators from the Operator Hub
 
 ##### Logging in to the Cluster
@@ -51,7 +52,13 @@ demo console.
 1. In **Details** Click on **Create Instance** under the **MetalLB API**
 2. Use defaults and click **Create**
 
-#### Installating the Prerequisite Operators using the CLI
+##### Cert Manager Operator
+
+1. Click on **Operators** to expand the section and then select "OperatorsHub".
+2. Search for **cert-manager** and select **cert-manager Operator for Red Hat OpenShift** and click **Install**
+3. Use defaults and click **Install**
+
+#### Installing the Prerequisite Operators using the CLI
 
 ##### Logging in to the Cluster
 
@@ -228,6 +235,81 @@ oc get deployment -n metallb-system controller
 oc get daemonset -n metallb-system speaker
 ```
 
+##### Cert-Manager Operator
+1. Create the **cert-manager-operator** Operator namespace:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: cert-manager-operator
+    labels:
+      pod-security.kubernetes.io/enforce: privileged
+      security.openshift.io/scc.podSecurityLabelSync: "false"
+EOF
+```
+
+2. Create the **OperatorGroup**:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  targetNamespaces:
+  - cert-manager-operator
+  upgradeStrategy: Default
+EOF
+```
+3. Confirm the OperatorGroup is installed in the namespace:
+
+```
+oc get operatorgroup -n cert-manager-operator
+```
+
+4. Subscribe to the **cert-manager** Operator:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/openshift-cert-manager-operator.cert-manager-operator: ""
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1.12
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: cert-manager-operator.v1.12.1
+EOF
+```
+5. Confirm the **cert-manager** installplan is in the namespace:
+
+```
+oc get installplan -n cert-manager-operator
+```
+
+6. Confirm the **cert-manager** operator is installed:
+
+```
+oc get clusterserviceversion -n cert-manager-operator \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase
+```
+
+7. Verify that cert-manager pods are up and running by entering the following command:
+
+```
+oc get pods -n cert-manager
+```
+
 #### Deploy a local Quay registry if needed
 
 Log into the OCP console of your demo environment using the **admin** user
@@ -309,7 +391,7 @@ openstack-internal-registry-quay-redis-c8d944c9d-ng2xp        1/1     Running   
 
 Navigate to quay.apps.uuid.dynamic.redhatworkshops.io and create the **quay_user** user
 account with the password **openstack** and create a private repository called
-**dp2-openstack-operator-index**.
+**dp3-openstack-operator-index**.
 
 ##### Obtain the **self-signed certificate** for the **Quay Registry** and patch the cluster
 

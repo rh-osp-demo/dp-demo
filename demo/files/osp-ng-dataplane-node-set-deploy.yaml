@@ -11,6 +11,7 @@ spec:
   preProvisioned: true
   services:
     - bootstrap
+    - download-cache
     - configure-network
     - validate-network
     - install-os

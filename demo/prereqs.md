@@ -23,6 +23,7 @@ the [MetalLB
 Operator](https://access.redhat.com/documentation/en-us/openshift_container_platform/4.13/html/networking/load-balancing-with-metallb#nw-metallb-installing-operator-cli_metallb-operator-install) 
 and the [Cert-Manager  
 Operator](https://docs.openshift.com/container-platform/4.14///security/cert_manager_operator/cert-manager-operator-install.html)
+
 #### Installing the Operators from the Operator Hub
 
 ##### Logging in to the Cluster
@@ -56,7 +57,69 @@ demo console.
 
 1. Click on **Operators** to expand the section and then select "OperatorsHub".
 2. Search for **cert-manager** and select **cert-manager Operator for Red Hat OpenShift** and click **Install**
-3. Use defaults and click **Install**
+3. Select version **stable-v1.12** and use the other defaults and click **Install**
+
+##### Prepare the registry:
+
+1. On the **bastion host** create the **OperatorGroup**:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  targetNamespaces:
+  - cert-manager-operator
+  upgradeStrategy: Default
+EOF
+```
+
+2. Confirm the OperatorGroup is installed in the namespace:
+
+```
+oc get operatorgroup -n cert-manager-operator
+```
+
+3. Subscribe to the **cert-manager** Operator:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/openshift-cert-manager-operator.cert-manager-operator: ""
+  name: openshift-cert-manager-operator
+  namespace: cert-manager-operator
+spec:
+  channel: stable-v1.12
+  installPlanApproval: Automatic
+  name: openshift-cert-manager-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: cert-manager-operator.v1.12.1
+EOF
+```
+4. Confirm the **cert-manager** installplan is in the namespace:
+
+```
+oc get installplan -n cert-manager-operator
+```
+
+5. Confirm the **cert-manager** operator is installed:
+
+```
+oc get clusterserviceversion -n cert-manager-operator \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase
+```
+
+6. Verify that cert-manager pods are up and running by entering the following command:
+
+```
+oc get pods -n cert-manager
 
 #### Installing the Prerequisite Operators using the CLI
 

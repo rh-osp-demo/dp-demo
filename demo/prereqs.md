@@ -120,6 +120,7 @@ oc get clusterserviceversion -n cert-manager-operator \
 
 ```
 oc get pods -n cert-manager
+```
 
 #### Installing the Prerequisite Operators using the CLI
 

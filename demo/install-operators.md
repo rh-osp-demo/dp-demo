@@ -80,8 +80,8 @@ The policy.json file should look like:
 ### Download and expand the Operator Package Manager (**opm**)
 
 ```
-wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/opm-linux.tar.gz
-tar -xvf opm-linux.tar.gz
+wget wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.14/opm-linux-4.14.17.tar.gz
+tar -xvf opm-linux-4.14.17.tar.gz
 ```
 
 ### Use the **opm** tool to create an index image:

@@ -1,0 +1,22 @@
+Welcome to the Red Hat OpenStack Services on OpenShift(RHOSO) demonstration instructions.
+These instructions will guide you through the installation of the next generation of Red Hat's OpenStack product onto an existing OpenShift Cluster utilizing a bastion host and a single host for the data plane.
+
+In this demonstration, you will use the following infrastructure on RHEL 9.2: 3 node 4.14 OCP cluster bastion host dataplane
+
+In this demonstration, you will cover the following topics:
+
+* xref:prereqs.adoc[_Perform Pre-requisites_]
+* xref:install-operators.adoc[_Install the Red Hat OpenStack Platform service Operators_]
+* xref:secure.adoc[_Configure secure access for OpenStack services_]
+* xref:network-isolation.adoc[_Prepare OCP for OpenStack network isolation_]
+* xref:create-cp.adoc[_Create the control plane_]
+* xref:create-dp.adoc[_Create the data plane_]
+* xref:access.adoc[_Access the data plane_]
+
+Within the demo environment, you will be able to copy and paste the specified commands into the CLI.
+For some steps you may also need to edit some of the commands from the  instructions.
+*Be sure to review all commands carefully both for functionality and syntax!*
+
+When you're ready, click "next" to get started ...
+
+xref:prereqs.adoc[next]

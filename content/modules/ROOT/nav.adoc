@@ -1,0 +1,8 @@
+* xref:index.adoc[Introduction]
+* xref:prereqs.adoc[Perform Pre-Requisites]
+* xref:install-operators.adoc[Install the Red Hat OpenStack Platform Service Operators]
+* xref:secure.adoc[Configure Secure Access for OpenStack Services]
+* xref:network-isolation.adoc[Prepare OCP for OpenStack Network Isolation]
+* xref:create-cp.adoc[Create the Control Plane]
+* xref:create-dp.adoc[Create the Data Plane]
+* xref:access.adoc[Access the Data Plane]

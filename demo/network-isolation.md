@@ -6,7 +6,7 @@ start with **osp-ng-nncp-**. There are 3 files for each of the master and worker
 If not already in the **files directory**:
 
 ```
-cp dp-demo/demo/files
+cd dp-demo/demo/files
 ```
 
 1. The preconfigured yamls will be applied indivdually:

@@ -63,7 +63,7 @@ openstack server create \
     --flavor tiny --key-name default --network private --security-group basic \
     --image cirros test-server
 openstack floating ip create public
-openstack server add floating ip test-server <FLOATING_IP>
+openstack server add floating ip test-server $(openstack floating ip list -c "Floating IP Address" -f value)
 ```
 4. From the bastion access to the VM:
 

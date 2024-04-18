@@ -61,62 +61,26 @@ demo console.
 
 ##### Prepare the registry:
 
-1. On the **bastion host** create the **OperatorGroup**:
-
-```
-cat << EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1
-kind: OperatorGroup
-metadata:
-  name: cert-manager-operator
-  namespace: cert-manager-operator
-spec:
-  targetNamespaces:
-  - cert-manager-operator
-  upgradeStrategy: Default
-EOF
-```
-
-2. Confirm the OperatorGroup is installed in the namespace:
+1. On the **bastion host** confirm the **OperatorGroup** is installed in the namespace:
 
 ```
 oc get operatorgroup -n cert-manager-operator
 ```
 
-3. Subscribe to the **cert-manager** Operator:
-
-```
-cat << EOF | oc apply -f -
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-  labels:
-    operators.coreos.com/openshift-cert-manager-operator.cert-manager-operator: ""
-  name: openshift-cert-manager-operator
-  namespace: cert-manager-operator
-spec:
-  channel: stable-v1.12
-  installPlanApproval: Automatic
-  name: openshift-cert-manager-operator
-  source: redhat-operators
-  sourceNamespace: openshift-marketplace
-  startingCSV: cert-manager-operator.v1.12.1
-EOF
-```
-4. Confirm the **cert-manager** installplan is in the namespace:
+2. Confirm the **cert-manager** installplan is in the namespace:
 
 ```
 oc get installplan -n cert-manager-operator
 ```
 
-5. Confirm the **cert-manager** operator is installed:
+3. Confirm the **cert-manager** operator is installed:
 
 ```
 oc get clusterserviceversion -n cert-manager-operator \
  -o custom-columns=Name:.metadata.name,Phase:.status.phase
 ```
 
-6. Verify that cert-manager pods are up and running by entering the following command:
+4. Verify that cert-manager pods are up and running by entering the following command:
 
 ```
 oc get pods -n cert-manager

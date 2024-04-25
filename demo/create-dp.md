@@ -17,7 +17,7 @@ oc apply -f osp-ng-dataplane-netconfig.yaml
 ## Create VM for Dataplane
 
 Go to https://access.redhat.com/downloads/content/479/ver=/rhel---9/9.3/x86_64/product-software
- and login. Scroll down to Red Hat Enterprise Linux 9.3 KVM Guest Image and copy the link and replace rhellink below
+ and login. Scroll down to Red Hat Enterprise Linux 9.3 KVM Guest Image and copy the link and replace rhellink below. Keep the double quotes, otherwise the download will fail.
 
 1. Download the **RHEL image** on lab-user(**hypervisor**) server:
 

@@ -144,7 +144,9 @@ git clone https://github.com/rh-osp-demo/dp-demo.git
 cd dp-demo/demo/files
 ```
 
-Update uuid in **osp-ng-openstack-operator.yaml**
+Update uuid in all precofigured yaml files with the uuid of your cluster.
+
+Apply the preconfigured yaml file for the **osp-ng-openstack-operator.yaml**:
 
 ```
 oc apply -f osp-ng-openstack-operator.yaml

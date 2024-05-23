@@ -421,7 +421,7 @@ openstack-internal-registry-quay-redis-c8d944c9d-ng2xp        1/1     Running   
 
 Navigate to quay.apps.uuid.dynamic.redhatworkshops.io and create the **quay_user** user
 account with the password **openstack** and create a private repository called
-**dp3-openstack-operator-index**.
+**beta-openstack-operator-index**.
 
 ##### Obtain the **self-signed certificate** for the **Quay Registry** and patch the cluster
 

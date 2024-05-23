@@ -13,5 +13,14 @@ oc create -f osp-ng-ctlplane-secret.yaml
 ```
 oc describe secret osp-secret -n openstack
 ```
+3. Create the libvirt **Secret**:
+```
+oc create -f osp-ng-libvirt-secret.yaml
+```
+4. Verify the libvirt **Secret** was created:
+
+```
+oc describe secret libvirt-secret -n openstack
+```
 
 [back](install-operators.md) [next](network-isolation.md)

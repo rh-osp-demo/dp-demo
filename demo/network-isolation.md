@@ -15,9 +15,6 @@ cd dp-demo/demo/files
 oc apply -f osp-ng-nncp-w1.yaml
 oc apply -f osp-ng-nncp-w2.yaml
 oc apply -f osp-ng-nncp-w3.yaml
-oc apply -f osp-ng-nncp-m1.yaml
-oc apply -f osp-ng-nncp-m2.yaml
-oc apply -f osp-ng-nncp-m3.yaml
 ```
 
 Wait until they are in an available state before proceeding:
@@ -28,9 +25,6 @@ oc get nncp -w
 
 ```
 NAME                              STATUS      REASON
-osp-enp1s0-master1-ocp4-master1   Available   SuccessfullyConfigured
-osp-enp1s0-master2-ocp4-master2   Available   SuccessfullyConfigured
-osp-enp1s0-master3-ocp4-master3   Available   SuccessfullyConfigured
 osp-enp1s0-worker-ocp4-worker1    Available   SuccessfullyConfigured
 osp-enp1s0-worker-ocp4-worker2    Available   SuccessfullyConfigured
 osp-enp1s0-worker-ocp4-worker3    Available   SuccessfullyConfigured

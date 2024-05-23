@@ -248,7 +248,9 @@ kind: MetalLB
 metadata:
   name: metallb
   namespace: metallb-system
-EOF
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
 ```
 
 8. Verify that the deployment for the controller is running:

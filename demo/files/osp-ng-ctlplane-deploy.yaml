@@ -5,6 +5,9 @@ metadata:
 spec:
   secret: osp-secret
   storageClass: ocs-storagecluster-ceph-rbd
+  tls:
+    podLevel:
+      enabled: false
   dns:
     template:
       override:
@@ -57,6 +60,29 @@ spec:
             nas_secure_file_permissions=false
           customServiceConfigSecrets:
           - cinder-nfs-config
+  barbican:
+    enabled: false  
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      secret: osp-secret
+      barbicanAPI:
+        replicas: 1
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+              spec:
+                type: LoadBalancer
+      barbicanWorker:
+        replicas: 1
+      barbicanKeystoneListener:
+        replicas: 1
   glance:
     apiOverrides:
       default:
@@ -110,24 +136,12 @@ spec:
               type: LoadBalancer
       databaseInstance: openstack
       secret: osp-secret
-  mariadb:
-    enabled: false
-    templates:
-      openstack:
-        storageRequest: 500M
-      openstack-cell1:
-        storageRequest: 500M
   galera:
-    enabled: true
     templates:
       openstack:
         storageRequest: 500M
-        secret: osp-secret
-        replicas: 1
       openstack-cell1:
         storageRequest: 500M
-        secret: osp-secret
-        replicas: 1
   memcached:
     templates:
       memcached:
@@ -183,6 +197,7 @@ spec:
               type: LoadBalancer
       secret: osp-secret
   manila:
+    enabled: false
     apiOverride:
       route: {}
     template:
@@ -218,13 +233,7 @@ spec:
           dbType: SB
           storageRequest: 10G
           networkAttachment: internalapi
-      ovnNorthd:
-        networkAttachment: internalapi
       ovnController:
-        external-ids:
-          system-id: "random"
-          ovn-bridge: "br-int"
-          ovn-encap-type: "geneve"
         networkAttachment: tenant
   placement:
     apiOverride:
@@ -315,19 +324,30 @@ spec:
       metricStorage:
         enabled: false
         monitoringStack:
-          type: prometheus
+          alertingEnabled: true
+          scrapeInterval: 30s
+          storage:
+            strategy: persistent
+            retention: 24h
+            persistent:
+              pvcStorageRequest: 20G
       autoscaling:
         enabled: false
-        prometheus:
-          deployPrometheus: false
         aodh:
+          passwordSelectors:
+          databaseAccount: aodh
           databaseInstance: openstack
-          memcachedInstance: memcached
           secret: osp-secret
         heatInstance: heat
       ceilometer:
         enabled: true
         secret: osp-secret
+      logging:
+        enabled: false
+        network: internalapi
+        ipaddr: 172.17.0.80
+        port: 10514
+        cloNamespace: openshift-logging
   swift:
     enabled: false
     proxyOverride:
@@ -337,6 +357,8 @@ spec:
         ringReplicas: 1
       swiftStorage:
         replicas: 1
+        networkAttachments:
+        - storage
       swiftProxy:
         replicas: 1
         override:
@@ -349,6 +371,8 @@ spec:
                   metallb.universe.tf/loadBalancerIPs: 172.17.0.80
               spec:
                 type: LoadBalancer
+        networkAttachments:
+        - storage
   octavia:
     enabled: false
     template:
@@ -356,5 +380,37 @@ spec:
       octaviaAPI:
         replicas: 1
       secret: osp-secret
-  redis:
+  designate:
     enabled: false
+    apiOverride:
+      route: {}
+    template:
+      databaseInstance: openstack
+      secret: osp-secret
+      designateAPI:
+        override:
+          service:
+            internal:
+              metadata:
+                annotations:
+                  metallb.universe.tf/address-pool: internalapi
+                  metallb.universe.tf/allow-shared-ip: internalapi
+                  metallb.universe.tf/loadBalancerIPs: 172.17.0.80
+              spec:
+                type: LoadBalancer
+      designateCentral:
+        replicas: 1
+      designateWorker:
+        replicas: 0
+        networkAttachments:
+          - designate
+      designateProducer:
+        replicas: 0
+      designateMdns:
+        replicas: 0
+        networkAttachments:
+          - designate
+      designateBackendbind9:
+        replicas: 0
+        networkAttachments:
+          - designate

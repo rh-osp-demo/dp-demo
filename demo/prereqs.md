@@ -251,6 +251,7 @@ metadata:
 spec:
   nodeSelector:
     node-role.kubernetes.io/worker: ""
+EOF
 ```
 
 8. Verify that the deployment for the controller is running:
@@ -392,6 +393,10 @@ spec:
       managed: false
     - kind: monitoring
       managed: false
+    - kind: quay
+      managed: true
+      overrides:
+        replicas: 1
 EOF
 ```
 

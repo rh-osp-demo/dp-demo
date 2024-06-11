@@ -3,7 +3,7 @@ kind: OpenStackDataPlaneNodeSet
 metadata:
   name: openstack-edpm-ipam
 spec:
-  tlsEnabled: true
+  tlsEnabled: false
   env:
     - name: ANSIBLE_FORCE_COLOR
       value: "True"
@@ -24,7 +24,6 @@ spec:
     - neutron-metadata
     - libvirt
     - nova
-    - telemetry
   preProvisioned: true
   networkAttachments:
   - ctlplane

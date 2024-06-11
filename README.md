@@ -1,5 +1,5 @@
-# Red Hat OpenStack Services on OpenShift Dev Preview 3 Demo
-Installation instructions to install the Dev Preview 3 version
+# Red Hat OpenStack Services on OpenShift Beta Demo
+Installation instructions to install the Beta version
 of Red Hat OpenStack Services on OpenShift.
 
 Click in the link below to get started:

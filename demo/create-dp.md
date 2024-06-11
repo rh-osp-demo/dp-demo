@@ -16,18 +16,18 @@ oc apply -f osp-ng-dataplane-netconfig.yaml
 
 ## Create VM for Dataplane
 
-Go to https://access.redhat.com/downloads/content/479/ver=/rhel---9/9.3/x86_64/product-software
- and login. Scroll down to Red Hat Enterprise Linux 9.3 KVM Guest Image and copy the link and replace rhellink below. Keep the double quotes, otherwise the download will fail.
+Go to https://access.redhat.com/downloads/content/479/ver=/rhel---9/9.4/x86_64/product-software
+ and login. Scroll down to Red Hat Enterprise Linux 9.4 KVM Guest Image and copy the link and replace rhellink below. Keep the double quotes, otherwise the download will fail.
 
 1. Download the **RHEL image** on lab-user(**hypervisor**) server:
 
 ```
 sudo -i
 cd /var/lib/libvirt/images
-curl -o rhel9-3.qcow2 "rhellink"
+curl -o rhel9-4.qcow2 "rhellink"
 ```
 ```
-cp rhel9-3.qcow2 rhel9-guest.qcow2
+cp rhel9-4.qcow2 rhel9-guest.qcow2
 qemu-img info rhel9-guest.qcow2
 qemu-img resize rhel9-guest.qcow2 +90G
 chown -R qemu:qemu rhel9-*.qcow2
@@ -96,11 +96,11 @@ ssh root@172.22.0.100
 sudo hostnamectl set-hostname edpm-compute-0.aio.example.com
 subscription-manager register
 ```
-#### Configure for the RHEL 9.3 Repos
+#### Configure for the RHEL 9.4 Repos
 ```
 sudo subscription-manager repos --disable=*
 subscription-manager repos --enable=rhceph-6-tools-for-rhel-9-x86_64-rpms --enable=rhel-9-for-x86_64-baseos-rpms --enable=rhel-9-for-x86_64-appstream-rpms --enable=rhel-9-for-x86_64-highavailability-rpms --enable=openstack-17.1-for-rhel-9-x86_64-rpms --enable=fast-datapath-for-rhel-9-x86_64-rpms
-sudo subscription-manager release --set=9.3
+sudo subscription-manager release --set=9.4
 ```
 
 #### Install podman on the compute and login to registries
@@ -112,7 +112,7 @@ sudo dnf install -y podman
 podman login registry.redhat.io
 ```
 ```
-podman login  --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/dp3-openstack-operator-index
+podman login  --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/beta-openstack-operator-index
 ```
 
 Log off
@@ -139,7 +139,14 @@ ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
 ```
 
-2. Deploy the Dataplane
+2. Apply the following workaround due to a typo in the ansible EEE image. Replace *registry.redhat.io/rhoso-edpm-beta/openstack-ansible-ee-rhel9:1.0.0* by *registry.redhat.io/rhoso-edpm-beta/ee-openstack-ansible-ee-rhel9:1.0.0* in the following csvs: 
+```
+oc edit csv openstack-operator.v1.0.0 -n openstack-operators
+oc edit csv openstack-ansibleee-operator.v1.0.0 -n openstack-operators
+```
+
+
+3. Deploy the Dataplane
 
 Replace uuid in osp-ng-dataplane-node-set-deploy.yaml and apply
 ```

@@ -248,6 +248,9 @@ kind: MetalLB
 metadata:
   name: metallb
   namespace: metallb-system
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
 EOF
 ```
 
@@ -311,12 +314,11 @@ metadata:
   name: openshift-cert-manager-operator
   namespace: cert-manager-operator
 spec:
-  channel: stable-v1.12
+  channel: stable-v1
   installPlanApproval: Automatic
   name: openshift-cert-manager-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: cert-manager-operator.v1.12.1
 EOF
 ```
 5. Confirm the **cert-manager** installplan is in the namespace:
@@ -391,6 +393,10 @@ spec:
       managed: false
     - kind: monitoring
       managed: false
+    - kind: quay
+      managed: true
+      overrides:
+        replicas: 1
 EOF
 ```
 
@@ -419,7 +425,7 @@ openstack-internal-registry-quay-redis-c8d944c9d-ng2xp        1/1     Running   
 
 Navigate to quay.apps.uuid.dynamic.redhatworkshops.io and create the **quay_user** user
 account with the password **openstack** and create a private repository called
-**dp3-openstack-operator-index**.
+**beta-openstack-operator-index**.
 
 ##### Obtain the **self-signed certificate** for the **Quay Registry** and patch the cluster
 

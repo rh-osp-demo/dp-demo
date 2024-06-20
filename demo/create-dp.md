@@ -144,9 +144,13 @@ oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --
 oc edit csv openstack-operator.v1.0.0 -n openstack-operators
 oc edit csv openstack-ansibleee-operator.v1.0.0 -n openstack-operators
 ```
+3. Check the csvs are in Succeeded stated:
+```
+oc get csv openstack-operator.v1.0.0 -n openstack-operators
+oc get csv openstack-ansibleee-operator.v1.0.0 -n openstack-operators
+```
 
-
-3. Deploy the Dataplane
+4. Deploy the Dataplane
 
 Replace uuid in osp-ng-dataplane-node-set-deploy.yaml and apply
 ```

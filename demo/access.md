@@ -71,4 +71,4 @@ openstack server add floating ip test-server $(openstack floating ip list -c "Fl
 ssh cirros@<FLOATING_IP> (password is gocubsgo)
 ```
 
-[back](create-dp.md) [start](index.md)
+[back](create-dp.md) [next](scale-out.md)

@@ -15,7 +15,6 @@ spec:
       - end: 172.22.0.200
         start: 172.22.0.150
       cidr: 172.22.0.0/24
-      gateway: 172.22.0.1
   - name: internalapi 
     dnsDomain: internalapi.aio.example.com
     subnets:

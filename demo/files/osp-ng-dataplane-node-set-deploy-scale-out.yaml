@@ -104,6 +104,8 @@ spec:
          edpm_network_config_hide_sensitive_logs: false
 
          edpm_bootstrap_command: |
+           nmcli connection modify "System enp1s0" ipv4.never-default yes ipv6.never-default yes
+           nmcli connection up "System enp1s0"
            subscription-manager register --username your_user --password your_password
            sudo subscription-manager repos --disable=*
            subscription-manager repos --enable=rhceph-6-tools-for-rhel-9-x86_64-rpms  --enable=rhel-9-for-x86_64-baseos-rpms --enable=rhel-9-for-x86_64-appstream-rpms --enable=rhel-9-for-x86_64-highavailability-rpms --enable=fast-datapath-for-rhel-9-x86_64-rpms

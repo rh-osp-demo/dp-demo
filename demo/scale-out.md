@@ -42,7 +42,7 @@ Back on the **bastion** server:
 oc apply -f osp-ng-osp-compute1-bmh.yaml -n openshift-machine-api
 ```
 
-4. Wait until the baremal host is in Available state
+4. Wait until the baremal host is in Available state. The bmh will move first to registering, then to inspecting and finally to available state. This process could take around 4 min.
 ```
 oc get bmh -n openshift-machine-api -w
 ```

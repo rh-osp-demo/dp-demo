@@ -16,6 +16,7 @@ In this demonstration, you will cover the following topics:
 - [*Create the control plane*](create-cp.md)
 - [*Create the data plane*](create-dp.md)
 - [*Access the data plane*](access.md)
+- [*Scale out your data plane with CBO provisioned compute ndoes*](scale-out.md)
 
 Within the demo environment, you will be able to copy and paste the specified commands into the CLI. For some steps you may also need to edit some of the commands from the 
 instructions. **Be sure to review all commands carefully both for functionality and syntax!**

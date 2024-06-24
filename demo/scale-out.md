@@ -45,6 +45,18 @@ oc apply -f osp-ng-osp-compute1-bmh.yaml -n openshift-machine-api
 4. Wait until the baremal host is in Available state. The bmh will move first to registering, then to inspecting and finally to available state. This process could take around 4 min.
 ```
 oc get bmh -n openshift-machine-api -w
+
+Desired output:
+
+oc get bmh -n openshift-machine-api
+NAME           STATE                    CONSUMER                   ONLINE   ERROR   AGE
+master1        externally provisioned   ocp-49jkw-master-0         true             12h
+master2        externally provisioned   ocp-49jkw-master-1         true             12h
+master3        externally provisioned   ocp-49jkw-master-2         true             12h
+osp-compute1   available                                           false            7m39s
+worker1        provisioned              ocp-49jkw-worker-0-k9rl2   true             12h
+worker2        provisioned              ocp-49jkw-worker-0-xm9fs   true             12h
+worker3        provisioned              ocp-49jkw-worker-0-czfxj   true             12h
 ```
 Note: please control + C to quit the waiting command
 
@@ -122,6 +134,47 @@ Repeat the query until you see the following:
 ```
 NAME                  STATUS   MESSAGE
 scale-out-provisioned   True     NodeSet Ready
+```
+
+If you need to access to your provisioned compute node:
+
+Get the ipsets in the openstack namespace
+
+```
+oc get ipset -n openstack
+NAME             READY   MESSAGE          RESERVATION
+edpm-compute-0   True    Setup complete
+edpm-compute-1   True    Setup complete
+```
+
+Describe the provisioned node **edpm-compute-1**:
+```
+oc describe ipset edpm-compute-1 -n openstack
+```
+
+You will get controlplane address in the reservation properties:
+
+Output
+```
+[...]
+  Observed Generation:     1
+  Reservations:
+    Address:     172.22.0.101
+    Cidr:        172.22.0.0/24
+    Dns Domain:  ctlplane.aio.example.com
+    Gateway:     172.22.0.1
+    Mtu:         1500
+    Network:     ctlplane
+    Routes:
+      Destination:  0.0.0.0/0
+      Nexthop:      172.22.0.1
+[...]
+```
+
+Finally, you can ssh to the edp-compute1 using the address from the previous output:
+
+```
+ssh -i /root/.ssh/id_rsa_compute cloud-admin@172.22.0.101
 ```
 
 [back](access.md) [start](index.md)

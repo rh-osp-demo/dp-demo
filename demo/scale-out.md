@@ -136,6 +136,29 @@ NAME                  STATUS   MESSAGE
 scale-out-provisioned   True     NodeSet Ready
 ```
 
+9. Map the new compute nodes to the Compute cell that they are connected to:
+```
+oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
+```
+
+10. edp-compute-1 node should be visible in the compute service list:
+```
+oc rsh -n openstack openstackclient
+openstack compute service list
+
+Output:
+```
++--------------------------------------+----------------+-----------------------------------------+----------+---------+-------+----------------------------+
+| ID                                   | Binary         | Host                                    | Zone     | Status  | State | Updated At                 |
++--------------------------------------+----------------+-----------------------------------------+----------+---------+-------+----------------------------+
+| c22d0e08-f320-48a4-8060-3022b641e547 | nova-conductor | nova-cell0-conductor-0                  | internal | enabled | up    | 2024-06-24T14:52:04.000000 |
+| 1236e907-6496-441c-90f7-c421f975d58b | nova-scheduler | nova-scheduler-0                        | internal | enabled | up    | 2024-06-24T14:52:10.000000 |
+| 64389713-7040-4e52-b0e3-cb342f94d8ef | nova-conductor | nova-cell1-conductor-0                  | internal | enabled | up    | 2024-06-24T14:52:10.000000 |
+| 925be1d2-50f3-49d7-9a85-953573f321d9 | nova-compute   | edpm-compute-0.ctlplane.aio.example.com | nova     | enabled | up    | 2024-06-24T14:52:02.000000 |
+| e4149731-47b2-4722-bc08-e65fd902c82d | nova-compute   | edpm-compute-1.ctlplane.aio.example.com | nova     | enabled | up    | 2024-06-24T14:52:06.000000 |
++--------------------------------------+----------------+-----------------------------------------+----------+---------+-------+----------------------------+
+``` 
+
 If you need to access to your provisioned compute node:
 
 Get the ipsets in the openstack namespace

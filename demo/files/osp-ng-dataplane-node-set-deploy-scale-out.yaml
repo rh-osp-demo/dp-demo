@@ -37,7 +37,6 @@ spec:
         networks:
         - name: ctlplane
           subnetName: subnet1
-          defaultRoute: false
         - name: internalapi
           subnetName: subnet1
         - name: storage

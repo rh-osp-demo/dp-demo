@@ -61,10 +61,26 @@ oc apply -f osp-ng-dataplane-node-set-deploy-scale-out.yaml
 oc apply -f osp-ng-dataplane-deployment-scale-out.yaml
 ```
 
-7. Node will move from available to provisioning:
+7. A provisioner pod will be executed to pull out the edpm RHEL image and to provison in the node:
+
+```
+oc get pods -n openstack
+NAME                                                              READY   STATUS      RESTARTS   AGE
+[...]
+reboot-os-openstack-edpm-ipam-openstack-edpm-ipam-scqq9           0/1     Completed   0          111m
+run-os-openstack-edpm-ipam-openstack-edpm-ipam-zs4dk              0/1     Completed   0          111m
+scale-out-provisioned-provisionserver-openstackprovisionse2csnp   1/1     Running     0          2m18s
+ssh-known-hosts-openstack-edpm-ipam-67lt8                         0/1     Completed   0          111m
+validate-network-openstack-edpm-ipam-openstack-edpm-ipam-r22jq    0/1     Completed   0          112m
+[...]
+```
+
+8. Node will move from available to provisioning:
 ```
 oc get bmh -n openshift-machine-api
 ```
+
+After node provioning the deployment will proceed similarly as in the pre-provisoned section:
 
 You can view the Ansible logs while the deployment executes:
 

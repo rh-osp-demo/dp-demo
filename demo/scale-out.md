@@ -145,7 +145,7 @@ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 ```
 oc rsh -n openstack openstackclient
 openstack compute service list
-
+```
 Output:
 ```
 +--------------------------------------+----------------+-----------------------------------------+----------+---------+-------+----------------------------+

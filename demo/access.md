@@ -71,4 +71,47 @@ openstack server add floating ip test-server $(openstack floating ip list -c "Fl
 ssh cirros@<FLOATING_IP> (password is gocubsgo)
 ```
 
-[back](create-dp.md) [start](index.md)
+```
+exit
+```
+
+5. Optional: Enable Horizon
+
+From the Bastion:
+
+```
+oc patch openstackcontrolplanes/openstack-galera-network-isolation -p='[{"op": "replace", "path": "/spec/horizon/enabled", "value": true}]' --type json
+```
+
+6. Check that the horizon pods are running after enabling it:
+
+```
+oc get pods -n openstack
+```
+Output:
+
+```
+[...]
+glance-default-single-0                                           3/3     Running             0          7h3m
+horizon-5dbc7bd48c-hfxvw                                          0/1     Terminating         0          3s
+horizon-6bc6f585c5-c8bhn                                          0/1     ContainerCreating   0          2s
+horizon-84f6cc96d7-zhc4k                                          0/1     ContainerCreating   0          3s
+[...]
+```
+
+7. Get the Route
+
+```
+ROUTE=$(oc get routes horizon  -o go-template='https://{{range .status.ingress}}{{.host}}{{end}}')
+echo $ROUTE
+```
+
+Sample Output
+```
+https://horizon-openstack.apps.86dgb.dynamic.redhatworkshops.io
+```
+
+8. Click the url and log in as username `admin` password `openstack`
+
+
+[back](create-dp.md) [next](scale-out.md)

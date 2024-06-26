@@ -1,0 +1,7 @@
+apiVersion: dataplane.openstack.org/v1beta1
+kind: OpenStackDataPlaneDeployment
+metadata:
+  name: openstack-scale-out-provisioned
+spec:
+  nodeSets:
+    - scale-out-provisioned

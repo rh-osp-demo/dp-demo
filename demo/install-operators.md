@@ -29,7 +29,13 @@ oc new-project openstack
 
 ```
 sudo curl https://www.redhat.com/security/data/f21541eb.txt -o /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta
+```
+
+```
 sudo podman image trust set -f /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta registry.redhat.io/rhosp-dev-preview
+```
+
+```
 sudo cat /etc/containers/policy.json
 ```
 
@@ -81,6 +87,9 @@ The policy.json file should look like:
 
 ```
 wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.14/opm-linux.tar.gz
+```
+
+```
 tar -xvzf opm-linux.tar.gz
 ```
 
@@ -93,18 +102,27 @@ registry or the following information for the registry in your environment.
 1. Login with your RedHat account and create a secret:
 ```
 podman login registry.redhat.io
+```
+
+```
 podman login registry.redhat.io --authfile auth.json
 ```
 
 2. Login with quay_user to the environment's registry or login to your own registry and create a secret:
 ```
 podman login --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/beta-openstack-operator-index
+```
+
+```
 podman login --username "quay_user" --password "openstack" quay.apps.uuid.dynamic.redhatworkshops.io/quay_user/beta-openstack-operator-index --authfile auth.json
 ```
 
 or
 ```
 podman login <your_registry> -u <user> -p <password>
+```
+
+```
 podman login <your_registry> -u <user> -p <password> --authfile auth.json
 ```
 

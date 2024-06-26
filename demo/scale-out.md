@@ -5,7 +5,13 @@
 ```
 sudo -i
 cd /var/lib/libvirt/images
+```
+
+```
 qemu-img create -f qcow2 /var/lib/libvirt/images/osp-compute-1.qcow2 150G
+```
+
+```
 virt-install --virt-type kvm --ram 6144 --vcpus 2 --cpu=host-passthrough --os-variant rhel8.4 --disk path=/var/lib/libvirt/images/osp-compute-1.qcow2,device=disk,bus=virtio,format=qcow2 --network network:ocp4-provisioning,mac="de:ad:be:ef:00:07" --network network:ocp4-net --boot hd,network --noautoconsole --vnc --name osp-compute1 --noreboot
 virsh start osp-compute1
 ```
@@ -14,13 +20,18 @@ virsh start osp-compute1
 
 ```
 iptables -A LIBVIRT_INP -p udp --dport 6237 -j ACCEPT
+```
+
+```
 vbmc add --username admin --password redhat --port 6237 --address 192.168.123.1 --libvirt-uri qemu:///system osp-compute1
 vbmc start osp-compute1
 ```
 
-The new host should be visible:
 ```
-[root@hypervisor ~]# vbmc list
+vbmc list
+```
+```
+The new host should be visible:
 +--------------+---------+---------------+------+
 | Domain name  | Status  | Address       | Port |
 +--------------+---------+---------------+------+
@@ -45,10 +56,15 @@ oc apply -f osp-ng-osp-compute1-bmh.yaml -n openshift-machine-api
 4. Wait until the baremal host is in Available state. The bmh will move first to registering, then to inspecting and finally to available state. This process could take around 4 min.
 ```
 oc get bmh -n openshift-machine-api -w
+```
+
+```
+oc get bmh -n openshift-machine-api
+```
 
 Desired output:
 
-oc get bmh -n openshift-machine-api
+```
 NAME           STATE                    CONSUMER                   ONLINE   ERROR   AGE
 master1        externally provisioned   ocp-49jkw-master-0         true             12h
 master2        externally provisioned   ocp-49jkw-master-1         true             12h
@@ -77,6 +93,9 @@ oc apply -f osp-ng-dataplane-deployment-scale-out.yaml
 
 ```
 oc get pods -n openstack
+```
+
+```
 NAME                                                              READY   STATUS      RESTARTS   AGE
 [...]
 reboot-os-openstack-edpm-ipam-openstack-edpm-ipam-scqq9           0/1     Completed   0          111m
@@ -144,6 +163,9 @@ oc rsh nova-cell0-conductor-0 nova-manage cell_v2 discover_hosts --verbose
 10. edp-compute-1 node should be visible in the compute service list:
 ```
 oc rsh -n openstack openstackclient
+```
+
+```
 openstack compute service list
 ```
 Output:
@@ -165,6 +187,9 @@ Get the ipsets in the openstack namespace
 
 ```
 oc get ipset -n openstack
+```
+
+```
 NAME             READY   MESSAGE          RESERVATION
 edpm-compute-0   True    Setup complete
 edpm-compute-1   True    Setup complete

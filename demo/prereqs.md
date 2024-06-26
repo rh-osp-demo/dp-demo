@@ -50,8 +50,40 @@ demo console.
 
 ###### Create a **MetalLB Instance**
 
-1. In **Details** Click on **Create Instance** under the **MetalLB API**
-2. Use defaults and click **Create**
+1. On the **bastion host** confirm the OperatorGroup is installed in the namespace:
+
+```
+oc get operatorgroup -n metallb-system
+```
+
+
+2. Confirm the **metallb** installplan is in the namespace:
+
+```
+oc get installplan -n metallb-system
+```
+  
+3. Confirm the **metallb** operator is installed:
+  
+```
+oc get clusterserviceversion -n metallb-system \
+ -o custom-columns=Name:.metadata.name,Phase:.status.phase
+```
+
+4. Create a single instance of a **metallb** resource:
+
+```
+cat << EOF | oc apply -f -
+apiVersion: metallb.io/v1beta1
+kind: MetalLB
+metadata:
+  name: metallb
+  namespace: metallb-system
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
+EOF
+```
 
 ##### Cert Manager Operator
 

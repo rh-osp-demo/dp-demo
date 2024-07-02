@@ -58,4 +58,17 @@ which will configure the topology for each data plane network.
 oc apply -f osp-ng-dataplane-netconfig.yaml
 ```
 
+6. If your cluster is RHOCP 4.14 or later and it has OVNKubernetes as the network back end, then you must enable global forwarding so that MetalLB can work on a secondary network interface.
+
+Check the network back end used by your cluster:
+
+```
+$ oc get network.operator cluster --output=jsonpath='{.spec.defaultNetwork.type}'
+```
+If the back end is OVNKubernetes, then run the following command to enable global IP forwarding:
+
+```
+$ oc patch network.operator cluster -p '{"spec":{"defaultNetwork":{"ovnKubernetesConfig":{"gatewayConfig":{"ipForwarding": "Global"}}}}}' --type=merge
+```
+
 [back](secure.md) [next](create-cp.md)

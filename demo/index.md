@@ -3,7 +3,7 @@ guide you through the installation of the next generation of Red Hat's OpenStack
 OpenShift Cluster utilizing a bastion host and a single host for the data plane.
 
 In this demonstration, you will use the following infrastructure on RHEL 9.2:
-3 node 4.14 OCP cluster
+3 node 4.13 OCP cluster
 bastion host
 dataplane
 

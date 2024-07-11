@@ -81,6 +81,7 @@ From the Bastion:
 
 ```
 oc patch openstackcontrolplanes/openstack-galera-network-isolation -p='[{"op": "replace", "path": "/spec/horizon/enabled", "value": true}]' --type json
+oc patch openstackcontrolplane/openstack-galera-network-isolation -p '{"spec": {"horizon": {"template": {"customServiceConfig": "USE_X_FORWARDED_HOST = False" }}}}' --type=merge
 ```
 
 6. Check that the horizon pods are running after enabling it:
@@ -102,13 +103,13 @@ horizon-84f6cc96d7-zhc4k                                          0/1     Contai
 7. Get the Route
 
 ```
-ROUTE=$(oc get routes horizon  -o go-template='https://{{range .status.ingress}}{{.host}}{{end}}')
+ROUTE=$(oc get routes horizon  -o go-template='http://{{range .status.ingress}}{{.host}}{{end}}')
 echo $ROUTE
 ```
 
 Sample Output
 ```
-https://horizon-openstack.apps.86dgb.dynamic.redhatworkshops.io
+http://horizon-openstack.apps.86dgb.dynamic.redhatworkshops.io
 ```
 
 8. Click the url and log in as username `admin` password `openstack`

@@ -1,12 +1,6 @@
 # Access the OpenStack
 
-1. From the **hypervisor server** access the compute node and disable selinux. Note that this is a temporary workaround as we are using OSP 17.1 packages. 
-```
-ssh root@172.22.0.100
-setenforce 0
-```
-
-2. From the **bastion server** access the Control Plane
+1. From the **bastion server** access the Control Plane
 
 ```
 oc rsh -n openstack openstackclient

@@ -99,7 +99,7 @@ subscription-manager register
 #### Configure for the RHEL 9.4 Repos
 ```
 sudo subscription-manager repos --disable=*
-subscription-manager repos --enable=rhceph-6-tools-for-rhel-9-x86_64-rpms --enable=rhel-9-for-x86_64-baseos-rpms --enable=rhel-9-for-x86_64-appstream-rpms --enable=rhel-9-for-x86_64-highavailability-rpms --enable=openstack-17.1-for-rhel-9-x86_64-rpms --enable=fast-datapath-for-rhel-9-x86_64-rpms
+subscription-manager repos --enable=rhceph-6-tools-for-rhel-9-x86_64-rpms --enable=rhel-9-for-x86_64-baseos-rpms --enable=rhel-9-for-x86_64-appstream-rpms --enable=rhel-9-for-x86_64-highavailability-rpms --enable=rhoso-18-beta-for-rhel-9-x86_64-rpms --enable=fast-datapath-for-rhel-9-x86_64-rpms
 sudo subscription-manager release --set=9.4
 ```
 
@@ -139,18 +139,7 @@ ssh-keygen -f ./id -t ecdsa-sha2-nistp521 -N ''
 oc create secret generic nova-migration-ssh-key --from-file=ssh-privatekey=id --from-file=ssh-publickey=id.pub -n openstack -o yaml | oc apply -f-
 ```
 
-2. Apply the following workaround due to a typo in the ansible EEE image. Replace *registry.redhat.io/rhoso-edpm-beta/openstack-ansible-ee-rhel9:1.0.0* by *registry.redhat.io/rhoso-edpm-beta/ee-openstack-ansible-ee-rhel9:1.0.0* in the following csvs: 
-```
-oc edit csv openstack-operator.v1.0.0 -n openstack-operators
-oc edit csv openstack-ansibleee-operator.v1.0.0 -n openstack-operators
-```
-3. Check the csvs are in Succeeded stated:
-```
-oc get csv openstack-operator.v1.0.0 -n openstack-operators
-oc get csv openstack-ansibleee-operator.v1.0.0 -n openstack-operators
-```
-
-4. Deploy the Dataplane
+2. Deploy the Dataplane
 
 Replace uuid in osp-ng-dataplane-node-set-deploy.yaml and apply
 ```
